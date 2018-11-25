@@ -33,10 +33,10 @@ public class Future<T> {
 		//TODO: implement this.
 		return null;
 	}
-	
+
 	/**
-     * Resolves the result of this Future object.
-     */
+	 * Resolves the result of this Future object.
+	 */
 	public void resolve (T result) {
 		//TODO: implement this.
 	}

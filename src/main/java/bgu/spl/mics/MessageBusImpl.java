@@ -1,11 +1,14 @@
 package bgu.spl.mics;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 /**
  * The {@link MessageBusImpl class is the implementation of the MessageBus interface.
  * Write your implementation here!
  * Only private fields and methods can be added to this class.
  */
 public class MessageBusImpl implements MessageBus {
+
 
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
@@ -54,6 +57,11 @@ public class MessageBusImpl implements MessageBus {
 	public Message awaitMessage(MicroService m) throws InterruptedException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public static MessageBusImpl getInstance(){
+		//TODO implement
+		throw new NotImplementedException();
 	}
 
 	
