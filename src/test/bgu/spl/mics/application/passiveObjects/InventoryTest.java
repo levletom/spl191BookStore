@@ -150,10 +150,32 @@ public class InventoryTest {
     }
 
     @Test
-    public void checkAvailabiltyAndGetPrice() {
+    public void checkAvailabiltyAndGetPrice_returns_minus_one_when_not_in_inventory() {
+        BookInventoryInfo[] bookArr = createBookInventoryInfoArrayOfSize(10);
+        inv.load(bookArr);
+        int returnedVal = inv.checkAvailabiltyAndGetPrice("not Here");
+        assertEquals(-1,returnedVal);
+
+    }
+    @Test
+    public void checkAvailabiltyAndGetPrice_returns_minus_one_when_not_in_stock() {
+        BookInventoryInfo[] bookArr = createBookInventoryInfoArrayOfSize(10);
+        inv.load(bookArr);
+        int returnedVal = inv.checkAvailabiltyAndGetPrice("Name 0");
+        assertEquals(-1,returnedVal);
     }
 
-    
+    @Test
+    public void  checkAvailabiltyAndGetPrice_returns_actual_price_when_in_stock(){
+        BookInventoryInfo[] bookArr = createBookInventoryInfoArrayOfSize(10);
+        inv.load(bookArr);
+        for (int i = 1; i < 10; i++) {
+            int returnedVal = inv.checkAvailabiltyAndGetPrice("Name "+i);
+            assertEquals(i,returnedVal);
+        }
+    }
+
+
 
 
 }
