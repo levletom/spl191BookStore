@@ -1,5 +1,6 @@
-package bgu.spl.mics;
+package java.bgu.spl.mics;
 
+import bgu.spl.mics.Future;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +16,7 @@ public class FutureTest {
     @Before
     public void setUp() throws Exception {
         testFut = new Future<>();
+
     }
 
     @After
@@ -26,12 +28,29 @@ public class FutureTest {
     public void get_CHECK_IF_WAITS_WHEN_NULL() {
         Thread t = new Thread(() -> testFut.get());
         t.start();
-    assertEquals(t.getState(),"BLOCKED");
+    assertEquals(Thread.State.BLOCKED,t.getState());
     }
     @Test
     public void get_CHECK_IF_WORKS() {
         testFut.resolve("resolved");
         assertEquals("resolved",testFut.get());
+    }
+    @Test
+    public void get_CHECK_IF_WAITS_AND_WORKS() {
+
+        Thread t = new Thread (new Runnable() {
+            String result=null;
+
+            @Override
+            public void run() {
+                result = testFut.get();
+            }
+        }
+        );
+        t.start();
+        assertEquals(Thread.State.BLOCKED,t.getState());
+        testFut.resolve("resolved");
+        assertEquals(Thread.State.RUNNABLE,t.getState());
     }
     @Test
     public void isDone_FALSE_IN_INI() {
