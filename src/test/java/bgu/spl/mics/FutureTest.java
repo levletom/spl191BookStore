@@ -1,4 +1,4 @@
-package java.bgu.spl.mics;
+package bgu.spl.mics;
 
 import bgu.spl.mics.Future;
 import org.junit.After;
@@ -81,5 +81,15 @@ public class FutureTest {
        t.start();
        String s = testFut.get(10,TimeUnit.SECONDS);
        assertEquals("resolved",s);
+    }
+    @Test
+    public void get1_CHECK_IF_WORKS_WHEN_LL() {
+        Integer a = new Integer(12);
+        Integer b = new Integer(12);
+        assertTrue(b!=a);
+        assertEquals(a,b);
+
+
+
     }
 }
