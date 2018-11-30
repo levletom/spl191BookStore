@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.passiveObjects;
 
 
+import java.util.List;
 
 /**
  * Passive data-object representing the store inventory.
@@ -31,6 +32,15 @@ public class Inventory {
      */
 	public void load (BookInventoryInfo[ ] inventory ) {
 		
+	}
+
+	/**
+	 * returns an array represnting the inner field of data from load function
+	 * @return a copy array of inventory info
+	 */
+	public BookInventoryInfo[] getBookInventoryForTestPurposeOnly() {
+		//TODO: Implement this
+		return null;
 	}
 	
 	/**
@@ -69,5 +79,11 @@ public class Inventory {
      */
 	public void printInventoryToFile(String filename){
 		//TODO: Implement this
+	}
+
+	/**
+	 * destroys all fields so tests wont depend on each other
+	 */
+	public void DestroyAllFieldsForTestPurposeOnly() {
 	}
 }
