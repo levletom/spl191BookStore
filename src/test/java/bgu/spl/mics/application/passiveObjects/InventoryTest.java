@@ -1,5 +1,8 @@
-package bgu.spl.mics.application.passiveObjects;
+package java.bgu.spl.mics.application.passiveObjects;
 
+import bgu.spl.mics.application.passiveObjects.BookInventoryInfo;
+import bgu.spl.mics.application.passiveObjects.Inventory;
+import bgu.spl.mics.application.passiveObjects.OrderResult;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

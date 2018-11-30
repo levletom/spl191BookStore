@@ -1,5 +1,6 @@
-package bgu.spl.mics;
+package java.bgu.spl.mics;
 
+import bgu.spl.mics.Future;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
