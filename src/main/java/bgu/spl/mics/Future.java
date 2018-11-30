@@ -1,5 +1,6 @@
 package bgu.spl.mics;
 
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -31,13 +32,17 @@ public class Future<T> {
      * 	       
      */
 	public T get() {
-		while(result==null){
-			try {
-				this.wait();
-			} catch (InterruptedException e) { }
-		}
+		synchronized (this) {
+			while (result == null) {
+				try {
+					wait();
+				} catch (InterruptedException e) {
 
-		return result;
+				}
+
+			}
+		}
+		return null;
 	}
 
 	/**
