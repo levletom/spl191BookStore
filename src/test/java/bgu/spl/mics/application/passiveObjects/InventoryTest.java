@@ -1,5 +1,6 @@
-package bgu.spl.mics.application.passiveObjects;
+package java.bgu.spl.mics.application.passiveObjects;
 
+import bgu.spl.mics.application.passiveObjects.Inventory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
