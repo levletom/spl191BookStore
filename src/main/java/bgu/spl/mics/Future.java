@@ -31,8 +31,13 @@ public class Future<T> {
      * 	       
      */
 	public T get() {
-		//TODO: implement this.
-		return null;
+		while(result==null){
+			try {
+				this.wait();
+			} catch (InterruptedException e) { }
+		}
+
+		return result;
 	}
 
 	/**
