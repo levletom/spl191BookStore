@@ -28,7 +28,14 @@ public class FutureTest {
     public void get_CHECK_IF_WAITS_WHEN_NULL() {
         Thread t = new Thread(() -> testFut.get());
         t.start();
-    assertEquals(Thread.State.BLOCKED,t.getState());
+        //give t a chance to execute get
+        try {
+            Thread.currentThread().sleep(1000);
+        } catch (InterruptedException e) {
+
+        }
+        assertEquals(Thread.State.WAITING,t.getState());
+
     }
     @Test
     public void get_CHECK_IF_WORKS() {
@@ -44,12 +51,26 @@ public class FutureTest {
             @Override
             public void run() {
                 result = testFut.get();
+                //so it will keep in RUNNABLE state after retrieving result as aposed to TERMINATED
+                while (result!=null);
             }
         }
         );
         t.start();
-        assertEquals(Thread.State.BLOCKED,t.getState());
+        //give t a chance to execute get()
+        try {
+            Thread.currentThread().sleep(1000);
+        } catch (InterruptedException e) {
+
+        }
+        assertEquals(Thread.State.WAITING,t.getState());
         testFut.resolve("resolved");
+        //give t a chance to get result
+        try {
+            Thread.currentThread().sleep(1000);
+        } catch (InterruptedException e) {
+
+        }
         assertEquals(Thread.State.RUNNABLE,t.getState());
     }
     @Test
@@ -82,14 +103,5 @@ public class FutureTest {
        String s = testFut.get(10,TimeUnit.SECONDS);
        assertEquals("resolved",s);
     }
-    @Test
-    public void get1_CHECK_IF_WORKS_WHEN_LL() {
-        Integer a = new Integer(12);
-        Integer b = new Integer(12);
-        assertTrue(b!=a);
-        assertEquals(a,b);
 
-
-
-    }
 }

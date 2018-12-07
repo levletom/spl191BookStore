@@ -70,8 +70,7 @@ public class MessageBusImpl implements MessageBus {
 
 
 	/**
-	 * Subscribes {@code m} to receive {@link Broadcast}s of type {@code type}.
-	 * locks on the specific queue that it works on if exists.
+	 * Subscribes {@code m} to receive {@link Broadcast}s of type {@code type}
 	 * locks if Brodcast was never subscribed to
 	 * <p>
 	 * @param type 	The type to subscribe to.
@@ -91,10 +90,10 @@ public class MessageBusImpl implements MessageBus {
 				}
 			}
 			if(!specificBroadcastListOfServices.contains(m)&& microServiceToBlockingQueue.get(m)!=null) {
-				synchronized (specificBroadcastListOfServices){
+
 					specificBroadcastListOfServices.offer(m);
 					microserviceToTypeOfBroadcastItsRegisteredTo.get(m).add(type);
-				}
+
 			}
 		}
 	}
@@ -121,14 +120,14 @@ public class MessageBusImpl implements MessageBus {
 	public void sendBroadcast(Broadcast b) {
 		if(b!=null) {
 			BlockingQueue<MicroService> broadcastTypeQueue = broadcastToMicroServiceQueue.get(b.getClass());
-			synchronized (broadcastTypeQueue) {
+
 				for (MicroService m :
 						broadcastTypeQueue) {
 					BlockingQueue<Message> microServiceQueue = microServiceToBlockingQueue.get(m);
 					if (microServiceQueue != null)
 						microServiceQueue.add(b);
 				}
-			}
+
 		}
 	}
 
@@ -196,20 +195,22 @@ public class MessageBusImpl implements MessageBus {
 	 */
 	@Override
 	public void unregister(MicroService m) {
-		if(m!=null){
-			Vector<Class<? extends Broadcast>> typeOfBroadCastVec = microserviceToTypeOfBroadcastItsRegisteredTo.get(m);
-			for (Class<? extends Broadcast> bc:
-				 typeOfBroadCastVec) {
-				BlockingQueue<MicroService> broadcastTypeQueue = broadcastToMicroServiceQueue.get(bc);
-				synchronized (broadcastTypeQueue){
-				 	broadcastTypeQueue.remove(m);
-			}
-			typeOfBroadCastVec.clear();
-			}
-			Vector<Class<? extends Event>> typeOfEventVec = microserviceToTypeOfEventItsRegisteredTo.get(m);
-			for (Class<? extends Event> e:
-				 typeOfEventVec) {
-				eventToMicroServiceRoundRobinQueue.get(e).remove(m);
+		if(m!=null) {
+			if (microServiceToBlockingQueue.get(m) != null) {
+				Vector<Class<? extends Broadcast>> typeOfBroadCastVec = microserviceToTypeOfBroadcastItsRegisteredTo.get(m);
+				for (Class<? extends Broadcast> bc :
+						typeOfBroadCastVec) {
+					BlockingQueue<MicroService> broadcastTypeQueue = broadcastToMicroServiceQueue.get(bc);
+					broadcastTypeQueue.remove(m);
+				}
+
+				typeOfBroadCastVec.clear();
+				Vector<Class<? extends Event>> typeOfEventVec = microserviceToTypeOfEventItsRegisteredTo.get(m);
+				for (Class<? extends Event> e :
+						typeOfEventVec) {
+					eventToMicroServiceRoundRobinQueue.get(e).remove(m);
+				}
+				typeOfEventVec.clear();
 			}
 		}
 	}
