@@ -1,8 +1,9 @@
 package bgu.spl.mics.application.messages.Events;
 
 
+import bgu.spl.mics.Event;
 
-public class CheckAvailabilityAndPriceEvent {
+public class CheckAvailabilityAndPriceEvent implements Event {
     private String bookName;
 
     public CheckAvailabilityAndPriceEvent(String bookName) {

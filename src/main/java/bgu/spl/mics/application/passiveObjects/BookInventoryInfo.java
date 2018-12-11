@@ -16,6 +16,14 @@ public class BookInventoryInfo{
 		// TODO Implement this
     }
 
+	/**
+	 * defaultConstructor
+	 * used in tests as is.
+	 */
+	public BookInventoryInfo(){
+
+	}
+
     /**
      * Retrieves the title of this book.
      * <p>

@@ -1,6 +1,8 @@
 package bgu.spl.mics.application.messages.Events;
 
-public class DeliveryEvent {
+import bgu.spl.mics.Event;
+
+public class DeliveryEvent implements Event {
     private String bookName;
     private String address;
     private int distance;

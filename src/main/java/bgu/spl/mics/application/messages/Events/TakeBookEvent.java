@@ -1,6 +1,8 @@
 package bgu.spl.mics.application.messages.Events;
 
-public class TakeBookEvent {
+import bgu.spl.mics.Event;
+
+public class TakeBookEvent implements Event {
     private String bookName;
 
     public TakeBookEvent(String bookName) {

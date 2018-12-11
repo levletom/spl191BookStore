@@ -98,4 +98,8 @@ public class Customer {
     		nextVal = currentVal - amount;
 		}while(!availableAmountInCreditCard.compareAndSet(currentVal,nextVal));
     }
+
+	public void addReceipt(OrderReceipt receipt) {
+    	this.listOfReciepts.add(receipt);
+	}
 }
