@@ -1,6 +1,9 @@
 package bgu.spl.mics.application.passiveObjects;
 
 
+import java.util.List;
+import java.util.Vector;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Passive object representing the store finance management. 
@@ -12,13 +15,22 @@ package bgu.spl.mics.application.passiveObjects;
  * You can add ONLY private fields and methods to this class as you see fit.
  */
 public class MoneyRegister {
-	
+
+  List<OrderReceipt> listOfAllOrderReceipt;
+  AtomicInteger totalEarnings;
+	/**
+	 * constructor
+	 */
+	private MoneyRegister(){
+		listOfAllOrderReceipt = new Vector<>();
+		totalEarnings = new AtomicInteger(0);
+	}
+
 	/**
      * Retrieves the single instance of this class.
      */
 	public static MoneyRegister getInstance() {
-		//TODO: Implement this
-		return null;
+		return SingletonHolder.instance;
 	}
 	
 	/**
@@ -27,15 +39,24 @@ public class MoneyRegister {
      * @param r		The receipt to save in the money register.
      */
 	public void file (OrderReceipt r) {
-		//TODO: Implement this.
+		int currentVal;
+		int nextVal;
+		if(r!=null){
+			listOfAllOrderReceipt.add(r);
+			do{
+				currentVal = totalEarnings.get();
+				nextVal = r.getPrice();
+			}while(!totalEarnings.compareAndSet(currentVal,nextVal));
+		}
+
 	}
-	
+
 	/**
      * Retrieves the current total earnings of the store.  
      */
 	public int getTotalEarnings() {
-		//TODO: Implement this
-		return 0;
+
+		return totalEarnings.get();
 	}
 	
 	/**
@@ -44,7 +65,9 @@ public class MoneyRegister {
      * @param amount 	amount to charge
      */
 	public void chargeCreditCard(Customer c, int amount) {
-		// TODO Implement this
+		if(c!=null){
+			c.charge(amount);
+		}
 	}
 	
 	/**
@@ -54,5 +77,9 @@ public class MoneyRegister {
      */
 	public void printOrderReceipts(String filename) {
 		//TODO: Implement this
+	}
+
+	private static class SingletonHolder {
+		private static MoneyRegister instance = new MoneyRegister();
 	}
 }

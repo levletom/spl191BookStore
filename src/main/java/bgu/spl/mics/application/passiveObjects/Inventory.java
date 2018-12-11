@@ -2,6 +2,8 @@ package bgu.spl.mics.application.passiveObjects;
 
 
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Semaphore;
 
 /**
  * Passive data-object representing the store inventory.
@@ -15,12 +17,18 @@ import java.util.List;
  */
 public class Inventory {
 
+	ConcurrentHashMap<String ,BookInventoryInfo> inventoryInfos;
+	ConcurrentHashMap<String ,Semaphore> bookToSemaphore;
 	/**
      * Retrieves the single instance of this class.
      */
 	public static Inventory getInstance() {
-		//TODO: Implement this
-		return null;
+		return SingletonHolder.instance;
+	}
+
+	private Inventory(){
+		inventoryInfos = new ConcurrentHashMap<>();
+		bookToSemaphore = new ConcurrentHashMap<>();
 	}
 	
 	/**
@@ -30,8 +38,11 @@ public class Inventory {
      * @param inventory 	Data structure containing all data necessary for initialization
      * 						of the inventory.
      */
-	public void load (BookInventoryInfo[ ] inventory ) {
-		
+	public void load (BookInventoryInfo[] inventory ) {
+		for (int i = 0; i < inventory.length; i++) {
+			inventoryInfos.put(inventory[i].getBookTitle(),new BookInventoryInfo(inventory[i]));
+			bookToSemaphore.put(inventory[i].getBookTitle(),new Semaphore(inventory[i].getAmountInInventory()));
+		}
 	}
 
 	/**
@@ -52,8 +63,12 @@ public class Inventory {
      * 			second should reduce by one the number of books of the desired type.
      */
 	public OrderResult take (String book) {
-		
-		return null;
+		Semaphore sem = bookToSemaphore.get(book);
+		if(sem!=null && sem.tryAcquire()) {
+			inventoryInfos.get(book).removeOne();
+			return OrderResult.SUCCESSFULLY_TAKEN;
+		}
+		return OrderResult.NOT_IN_STOCK;
 	}
 	
 	
@@ -65,7 +80,11 @@ public class Inventory {
      * @return the price of the book if it is available, -1 otherwise.
      */
 	public int checkAvailabiltyAndGetPrice(String book) {
-		//TODO: Implement this
+		Semaphore sem = bookToSemaphore.get(book);
+		if(sem!=null && sem.tryAcquire()) {
+			sem.release();
+			return inventoryInfos.get(book).getPrice();
+		}
 		return -1;
 	}
 	
@@ -85,5 +104,11 @@ public class Inventory {
 	 * destroys all fields so tests wont depend on each other
 	 */
 	public void DestroyAllFieldsForTestPurposeOnly() {
+	}
+
+
+
+	private static class SingletonHolder {
+		private static Inventory instance = new Inventory();
 	}
 }

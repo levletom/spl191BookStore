@@ -9,6 +9,14 @@ package bgu.spl.mics.application.passiveObjects;
 public class BookInventoryInfo{
 
 	/**
+	 * copy constructor
+	 * @param bookInventoryInfo
+	 */
+    public BookInventoryInfo(BookInventoryInfo bookInventoryInfo) {
+		// TODO Implement this
+    }
+
+    /**
      * Retrieves the title of this book.
      * <p>
      * @return The title of this book.   
@@ -37,8 +45,11 @@ public class BookInventoryInfo{
 		// TODO Implement this
 		return 0;
 	}
-	
-	
 
-	
+
+	/**
+	 * removes 1 from inventory
+	 */
+	public void removeOne() {
+	}
 }
