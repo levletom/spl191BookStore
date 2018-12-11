@@ -104,7 +104,8 @@ public abstract class MicroService implements Runnable {
      */
     protected final <T> Future<T> sendEvent(Event<T> e) {
         Future<T> toPutInHashMap = messageBus.sendEvent(e);
-        eventToItsReturnedFuture.put(e,toPutInHashMap);
+        if(toPutInHashMap!=null)
+            eventToItsReturnedFuture.put(e,toPutInHashMap);
         return toPutInHashMap;
     }
 
@@ -130,7 +131,7 @@ public abstract class MicroService implements Runnable {
      */
     protected final <T> void complete(Event<T> e, T result) {
         if(e!=null&result!=null)
-        messageBus.complete(e,result);
+            messageBus.complete(e,result);
     }
 
     /**
