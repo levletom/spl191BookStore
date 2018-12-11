@@ -54,8 +54,9 @@ public class MessageBusImpl implements MessageBus {
 				synchronized (lockForSubscribeEvent) {
 					specificEventListOfServices = eventToMicroServiceRoundRobinQueue.get(type);
 					if(specificEventListOfServices==null) {
-						eventToMicroServiceRoundRobinQueue.put(type, new LinkedBlockingQueue<MicroService>());
-						specificEventListOfServices = eventToMicroServiceRoundRobinQueue.get(type);
+						LinkedBlockingQueue<MicroService> B= new LinkedBlockingQueue<>();
+						eventToMicroServiceRoundRobinQueue.put(type, B);
+						specificEventListOfServices = B;
 					}
 				}
 			}
@@ -84,8 +85,9 @@ public class MessageBusImpl implements MessageBus {
 				synchronized (lockForSubscribeBroadcast) {
 					specificBroadcastListOfServices = broadcastToMicroServiceQueue.get(type);
 					if(specificBroadcastListOfServices==null) {
-						broadcastToMicroServiceQueue.put(type, new LinkedBlockingQueue<MicroService>());
-						specificBroadcastListOfServices = broadcastToMicroServiceQueue.get(type);
+						LinkedBlockingQueue<MicroService> A = new LinkedBlockingQueue<>();
+						broadcastToMicroServiceQueue.put(type, A);
+						specificBroadcastListOfServices = A;
 					}
 				}
 			}
