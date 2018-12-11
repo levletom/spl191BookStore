@@ -25,7 +25,7 @@ public abstract class MicroService implements Runnable {
     private boolean terminated = false;
     private final String name;
     private ConcurrentHashMap<Class<? extends Event>,Callback> typeOfEventToCallback;
-    private ConcurrentHashMap<Class<? extends Event>,Callback> typeOfBroadcastToCallback;
+    private ConcurrentHashMap<Class<? extends Broadcast>,Callback> typeOfBroadcastToCallback;
     private ConcurrentHashMap<Event,Future> eventToItsReturnedFuture;
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
@@ -34,6 +34,9 @@ public abstract class MicroService implements Runnable {
     public MicroService(String name) {
         this.name = name;
         messageBus = MessageBusImpl.getInstance();
+        this.typeOfBroadcastToCallback = new ConcurrentHashMap<>();
+        this.typeOfEventToCallback = new ConcurrentHashMap<>();
+        this.eventToItsReturnedFuture = new ConcurrentHashMap<>();
     }
 
     /**
@@ -58,7 +61,8 @@ public abstract class MicroService implements Runnable {
      *                 queue.
      */
     protected final <T, E extends Event<T>> void subscribeEvent(Class<E> type, Callback<E> callback) {
-        //TODO: implement this.
+        messageBus.subscribeEvent(type,this);
+        typeOfEventToCallback.put(type,callback);
     }
 
     /**
@@ -82,7 +86,8 @@ public abstract class MicroService implements Runnable {
      *                 queue.
      */
     protected final <B extends Broadcast> void subscribeBroadcast(Class<B> type, Callback<B> callback) {
-        //TODO: implement this.
+        messageBus.subscribeBroadcast(type,this);
+        typeOfBroadcastToCallback.put(type,callback);
     }
 
     /**
@@ -98,8 +103,9 @@ public abstract class MicroService implements Runnable {
      * 	       			null in case no micro-service has subscribed to {@code e.getClass()}.
      */
     protected final <T> Future<T> sendEvent(Event<T> e) {
-        //TODO: implement this.
-        return null; //TODO: delete this line :)
+        Future<T> toPutInHashMap = messageBus.sendEvent(e);
+        eventToItsReturnedFuture.put(e,toPutInHashMap);
+        return toPutInHashMap;
     }
 
     /**
@@ -109,7 +115,7 @@ public abstract class MicroService implements Runnable {
      * @param b The broadcast message to send
      */
     protected final void sendBroadcast(Broadcast b) {
-        //TODO: implement this.
+        messageBus.sendBroadcast(b);
     }
 
     /**
@@ -123,7 +129,8 @@ public abstract class MicroService implements Runnable {
      *               {@code e}.
      */
     protected final <T> void complete(Event<T> e, T result) {
-        //TODO: implement this.
+        if(e!=null&result!=null)
+        messageBus.complete(e,result);
     }
 
     /**
@@ -153,10 +160,28 @@ public abstract class MicroService implements Runnable {
      */
     @Override
     public final void run() {
+        messageBus.register(this);
         initialize();
         while (!terminated) {
-            System.out.println("NOT IMPLEMENTED!!!"); //TODO: you should delete this line :)
+            try {
+                Event event;
+                Message thisMessage = messageBus.awaitMessage(this);
+
+
+
+                Callback callBack = typeOfEventToCallback.get(thisMessage.getClass());
+                if(callBack!=null)
+                    callBack.call(thisMessage);
+                else{
+                     callBack = typeOfBroadcastToCallback.get(thisMessage.getClass());
+                     callBack.call(thisMessage);
+                }
+
+            } catch (InterruptedException e) {
+                terminate();
+            }
         }
+        messageBus.unregister(this);
     }
 
 }

@@ -147,7 +147,7 @@ public class MessageBusImpl implements MessageBus {
 	 * 	       null in case no micro-service has subscribed to {@code e.getClass()}.
 	 */
 	@Override
-	public <T> Future<T> sendEvent(Event<T> e) {
+	public synchronized <T> Future<T> sendEvent(Event<T> e) {
 		BlockingQueue<MicroService> specificEventsRoundRobinQueue = eventToMicroServiceRoundRobinQueue.get(e.getClass());
 		if(specificEventsRoundRobinQueue!=null && !specificEventsRoundRobinQueue.isEmpty()){
 			MicroService servieToHandleEvent = specificEventsRoundRobinQueue.poll();
@@ -194,24 +194,32 @@ public class MessageBusImpl implements MessageBus {
 	 * @param m the micro-service to unregister.
 	 */
 	@Override
-	public void unregister(MicroService m) {
-		if(m!=null) {
+	public synchronized void unregister(MicroService m) {
+		if (m != null) {
 			if (microServiceToBlockingQueue.get(m) != null) {
 				Vector<Class<? extends Broadcast>> typeOfBroadCastVec = microserviceToTypeOfBroadcastItsRegisteredTo.get(m);
 				for (Class<? extends Broadcast> bc :
 						typeOfBroadCastVec) {
 					BlockingQueue<MicroService> broadcastTypeQueue = broadcastToMicroServiceQueue.get(bc);
 					broadcastTypeQueue.remove(m);
-				}
 
-				typeOfBroadCastVec.clear();
-				Vector<Class<? extends Event>> typeOfEventVec = microserviceToTypeOfEventItsRegisteredTo.get(m);
-				for (Class<? extends Event> e :
-						typeOfEventVec) {
-					eventToMicroServiceRoundRobinQueue.get(e).remove(m);
+
+					typeOfBroadCastVec.clear();
+					Vector<Class<? extends Event>> typeOfEventVec = microserviceToTypeOfEventItsRegisteredTo.get(m);
+					for (Class<? extends Event> e :
+							typeOfEventVec) {
+						eventToMicroServiceRoundRobinQueue.get(e).remove(m);
+					}
+					typeOfEventVec.clear();
 				}
-				typeOfEventVec.clear();
 			}
+			BlockingQueue<Message> thisMicroServiceQueue = microServiceToBlockingQueue.get(m);
+			for (Message mes :
+					thisMicroServiceQueue) {
+				if(mes instanceof Event)
+					complete((Event)mes,null);
+			}
+			microServiceToBlockingQueue.remove(m);
 		}
 	}
 
@@ -231,6 +239,7 @@ public class MessageBusImpl implements MessageBus {
 	 * @throws InterruptedException if interrupted while waiting for a message
 	 *                              to became available.
 	 */
+
 	@Override
 	public Message awaitMessage(MicroService m) throws InterruptedException {
 		BlockingQueue<Message> specificServiceQueue = microServiceToBlockingQueue.get(m);
@@ -244,12 +253,12 @@ public class MessageBusImpl implements MessageBus {
 
 
 	public static MessageBusImpl getInstance() {
-		if(instance == null) {
-			instance = new MessageBusImpl();
-		}
-		return instance;
+		return SingletonHolder.instance;
 	}
 
+	private static class SingletonHolder {
+		private static MessageBusImpl instance = new MessageBusImpl();
+	}
 
 
 
