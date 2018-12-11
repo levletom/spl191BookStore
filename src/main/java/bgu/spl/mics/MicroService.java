@@ -164,11 +164,7 @@ public abstract class MicroService implements Runnable {
         initialize();
         while (!terminated) {
             try {
-                Event event;
                 Message thisMessage = messageBus.awaitMessage(this);
-
-
-
                 Callback callBack = typeOfEventToCallback.get(thisMessage.getClass());
                 if(callBack!=null)
                     callBack.call(thisMessage);

@@ -150,9 +150,9 @@ public class MessageBusImpl implements MessageBus {
 	public synchronized <T> Future<T> sendEvent(Event<T> e) {
 		BlockingQueue<MicroService> specificEventsRoundRobinQueue = eventToMicroServiceRoundRobinQueue.get(e.getClass());
 		if(specificEventsRoundRobinQueue!=null && !specificEventsRoundRobinQueue.isEmpty()){
-			MicroService servieToHandleEvent = specificEventsRoundRobinQueue.poll();
-			if(servieToHandleEvent!=null){
-				BlockingQueue<Message> specificServiceMessageLoopQueue = microServiceToBlockingQueue.get(servieToHandleEvent);
+			MicroService serviceToHandleEvent = specificEventsRoundRobinQueue.poll();
+			if(serviceToHandleEvent!=null){
+				BlockingQueue<Message> specificServiceMessageLoopQueue = microServiceToBlockingQueue.get(serviceToHandleEvent);
 
 					if(specificServiceMessageLoopQueue!=null) {
 						specificServiceMessageLoopQueue.offer(e);
