@@ -19,8 +19,8 @@ public class MessageBusImpl implements MessageBus {
 	private ConcurrentHashMap<Class<? extends Event>,BlockingQueue<MicroService>> eventToMicroServiceRoundRobinQueue;
 	private ConcurrentHashMap<Class<? extends Broadcast>,BlockingQueue<MicroService>> broadcastToMicroServiceQueue;
 	private ConcurrentHashMap<Event,Future> eventToItsReturnedFuture;
-	private ConcurrentHashMap<MicroService, Vector<Class<? extends Event>>> microserviceToTypeOfEventItsRegisteredTo;
-	private ConcurrentHashMap<MicroService, Vector<Class<? extends Broadcast>>> microserviceToTypeOfBroadcastItsRegisteredTo;
+	private ConcurrentHashMap<MicroService, BlockingQueue<Class<? extends Event>>> microserviceToTypeOfEventItsRegisteredTo;
+	private ConcurrentHashMap<MicroService, BlockingQueue<Class<? extends Broadcast>>> microserviceToTypeOfBroadcastItsRegisteredTo;
 	private Object lockForSubscribeEvent;
 	private Object lockForSubscribeBroadcast;
 
@@ -47,21 +47,22 @@ public class MessageBusImpl implements MessageBus {
 	 * @param m    The subscribing micro-service.
 	 */
 	@Override
-	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
+	public  <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
 		if (m != null && type != null) {
 			BlockingQueue<MicroService> specificEventListOfServices = eventToMicroServiceRoundRobinQueue.get(type);
 			if(specificEventListOfServices==null){
 				synchronized (lockForSubscribeEvent) {
 					specificEventListOfServices = eventToMicroServiceRoundRobinQueue.get(type);
 					if(specificEventListOfServices==null) {
-						eventToMicroServiceRoundRobinQueue.put(type, new LinkedBlockingQueue<MicroService>());
-						specificEventListOfServices = eventToMicroServiceRoundRobinQueue.get(type);
+						LinkedBlockingQueue<MicroService> B= new LinkedBlockingQueue<>();
+						eventToMicroServiceRoundRobinQueue.put(type, B);
+						specificEventListOfServices = B;
 					}
 				}
 			}
 
 			if (  !specificEventListOfServices.contains(m) && microServiceToBlockingQueue.get(m) != null)  {
-				microserviceToTypeOfEventItsRegisteredTo.get(m).add(type);
+				microserviceToTypeOfEventItsRegisteredTo.get(m).offer(type);
 				eventToMicroServiceRoundRobinQueue.get(type).offer(m);
 			}
 		}
@@ -84,15 +85,16 @@ public class MessageBusImpl implements MessageBus {
 				synchronized (lockForSubscribeBroadcast) {
 					specificBroadcastListOfServices = broadcastToMicroServiceQueue.get(type);
 					if(specificBroadcastListOfServices==null) {
-						broadcastToMicroServiceQueue.put(type, new LinkedBlockingQueue<MicroService>());
-						specificBroadcastListOfServices = broadcastToMicroServiceQueue.get(type);
+						LinkedBlockingQueue<MicroService> A = new LinkedBlockingQueue<>();
+						broadcastToMicroServiceQueue.put(type, A);
+						specificBroadcastListOfServices = A;
 					}
 				}
 			}
 			if(!specificBroadcastListOfServices.contains(m)&& microServiceToBlockingQueue.get(m)!=null) {
 
 					specificBroadcastListOfServices.offer(m);
-					microserviceToTypeOfBroadcastItsRegisteredTo.get(m).add(type);
+					microserviceToTypeOfBroadcastItsRegisteredTo.get(m).offer(type);
 
 			}
 		}
@@ -147,18 +149,28 @@ public class MessageBusImpl implements MessageBus {
 	 * 	       null in case no micro-service has subscribed to {@code e.getClass()}.
 	 */
 	@Override
-	public synchronized <T> Future<T> sendEvent(Event<T> e) {
+	public <T> Future<T> sendEvent(Event<T> e) {
 		BlockingQueue<MicroService> specificEventsRoundRobinQueue = eventToMicroServiceRoundRobinQueue.get(e.getClass());
 		if(specificEventsRoundRobinQueue!=null && !specificEventsRoundRobinQueue.isEmpty()){
-			MicroService serviceToHandleEvent = specificEventsRoundRobinQueue.poll();
-			if(serviceToHandleEvent!=null){
-				BlockingQueue<Message> specificServiceMessageLoopQueue = microServiceToBlockingQueue.get(serviceToHandleEvent);
+			MicroService servieToHandleEvent;
+			//synchronized (specificEventsRoundRobinQueue) {
+				servieToHandleEvent = specificEventsRoundRobinQueue.poll();
+				if(servieToHandleEvent!=null) {
+					specificEventsRoundRobinQueue.offer(servieToHandleEvent);
+			//	}
+			}
+			if(servieToHandleEvent!=null){
+				BlockingQueue<Message> specificServiceMessageLoopQueue = microServiceToBlockingQueue.get(servieToHandleEvent);
 
 					if(specificServiceMessageLoopQueue!=null) {
-						specificServiceMessageLoopQueue.offer(e);
-						Future<T>  returnedFuture = new Future<>();
-						eventToItsReturnedFuture.put(e,returnedFuture);
-						return returnedFuture;
+						try {
+							Future<T> returnedFuture = new Future<>();
+							eventToItsReturnedFuture.put(e, returnedFuture);
+							return returnedFuture;
+						}
+						finally {
+							specificServiceMessageLoopQueue.offer(e);
+						}
 					}
 
 
@@ -173,14 +185,14 @@ public class MessageBusImpl implements MessageBus {
 	 * @param m the micro-service to create a queue for.
 	 */
 	@Override
-	public void register(MicroService m) {
+	public  void register(MicroService m) {
 		if (m != null) {
 			if (!microServiceToBlockingQueue.containsKey(m)) {
 				//creates messages loop queue
 				microServiceToBlockingQueue.put(m, new LinkedBlockingQueue<Message>());
 				//creates vectors indicating witch type of message the microservice has subscribed to
-				microserviceToTypeOfEventItsRegisteredTo.put(m, new Vector<Class<? extends Event>>());
-				microserviceToTypeOfBroadcastItsRegisteredTo.put(m, new Vector<Class<? extends Broadcast>>());
+				microserviceToTypeOfEventItsRegisteredTo.put(m, new LinkedBlockingQueue<>());
+				microserviceToTypeOfBroadcastItsRegisteredTo.put(m, new LinkedBlockingQueue<>());
 			}
 		}
 	}
@@ -194,25 +206,25 @@ public class MessageBusImpl implements MessageBus {
 	 * @param m the micro-service to unregister.
 	 */
 	@Override
-	public synchronized void unregister(MicroService m) {
+	public void unregister(MicroService m) {
 		if (m != null) {
 			if (microServiceToBlockingQueue.get(m) != null) {
-				Vector<Class<? extends Broadcast>> typeOfBroadCastVec = microserviceToTypeOfBroadcastItsRegisteredTo.get(m);
+				BlockingQueue<Class<? extends Broadcast>> typeOfBroadCastVec = microserviceToTypeOfBroadcastItsRegisteredTo.get(m);
 				for (Class<? extends Broadcast> bc :
 						typeOfBroadCastVec) {
 					BlockingQueue<MicroService> broadcastTypeQueue = broadcastToMicroServiceQueue.get(bc);
 					broadcastTypeQueue.remove(m);
 
-
-					typeOfBroadCastVec.clear();
-					Vector<Class<? extends Event>> typeOfEventVec = microserviceToTypeOfEventItsRegisteredTo.get(m);
-					for (Class<? extends Event> e :
-							typeOfEventVec) {
-						eventToMicroServiceRoundRobinQueue.get(e).remove(m);
-					}
-					typeOfEventVec.clear();
 				}
+				typeOfBroadCastVec.clear();
+				BlockingQueue<Class<? extends Event>> typeOfEventVec = microserviceToTypeOfEventItsRegisteredTo.get(m);
+				for (Class<? extends Event> e :
+						typeOfEventVec) {
+					eventToMicroServiceRoundRobinQueue.get(e).remove(m);
+				}
+				typeOfEventVec.clear();
 			}
+
 			BlockingQueue<Message> thisMicroServiceQueue = microServiceToBlockingQueue.get(m);
 			for (Message mes :
 					thisMicroServiceQueue) {

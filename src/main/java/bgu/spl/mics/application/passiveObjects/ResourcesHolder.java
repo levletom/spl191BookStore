@@ -1,6 +1,10 @@
 package bgu.spl.mics.application.passiveObjects;
 
 import bgu.spl.mics.Future;
+import sun.security.provider.NativePRNG;
+
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Passive object representing the resource manager.
@@ -12,13 +16,15 @@ import bgu.spl.mics.Future;
  * You can add ONLY private methods and fields to this class.
  */
 public class ResourcesHolder {
-	
+     BlockingQueue<DeliveryVehicle> availableVehicles;
+	private ResourcesHolder(){
+		availableVehicles = new LinkedBlockingQueue<>();
+	}
 	/**
      * Retrieves the single instance of this class.
      */
 	public static ResourcesHolder getInstance() {
-		//TODO: Implement this
-		return null;
+		return SingletonHolder.instance;
 	}
 	
 	/**
@@ -29,8 +35,17 @@ public class ResourcesHolder {
      * 			{@link DeliveryVehicle} when completed.   
      */
 	public Future<DeliveryVehicle> acquireVehicle() {
-		//TODO: Implement this
-		return null;
+		Future<DeliveryVehicle> ans = new Future<>();
+		try{
+			return ans;
+		}
+		finally {
+			try {
+				ans.resolve(availableVehicles.take());
+			} catch (InterruptedException e) {
+
+			}
+		}
 	}
 	
 	/**
@@ -40,7 +55,7 @@ public class ResourcesHolder {
      * @param vehicle	{@link DeliveryVehicle} to be released.
      */
 	public void releaseVehicle(DeliveryVehicle vehicle) {
-		//TODO: Implement this
+		availableVehicles.offer(vehicle);
 	}
 	
 	/**
@@ -49,7 +64,13 @@ public class ResourcesHolder {
      * @param vehicles	Array of {@link DeliveryVehicle} instances to store.
      */
 	public void load(DeliveryVehicle[] vehicles) {
-		//TODO: Implement this
+		for(int i=0;i<vehicles.length;i++){
+			availableVehicles.offer(vehicles[i]);
+		}
+	}
+
+	private static class SingletonHolder {
+		private static ResourcesHolder instance = new ResourcesHolder();
 	}
 
 }

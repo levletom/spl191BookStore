@@ -1,6 +1,9 @@
 package bgu.spl.mics.application.passiveObjects;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Vector;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Passive data-object representing a customer of the store.
@@ -9,37 +12,52 @@ import java.util.List;
  * You may add fields and methods to this class as you see fit (including public methods).
  */
 public class Customer {
+    private final String customerName;
+    private final int customerId;
+    private final String address;
+    private final int distance;
+    private List<OrderReceipt> listOfReciepts;
+    private final int creditCard;
+    private AtomicInteger availableAmountInCreditCard;
+
+
+	public Customer(String customerName, int customerId, String address, int distance, int creditCard, AtomicInteger availableAmountInCreditCard) {
+		this.customerName = customerName;
+		this.customerId = customerId;
+		this.address = address;
+		this.distance = distance;
+		this.creditCard = creditCard;
+		this.availableAmountInCreditCard = availableAmountInCreditCard;
+		listOfReciepts = new Vector<>();
+	}
 
 	/**
      * Retrieves the name of the customer.
      */
 	public String getName() {
-		// TODO Implement this
-		return null;
+
+		return customerName;
 	}
 
 	/**
      * Retrieves the ID of the customer  . 
      */
 	public int getId() {
-		// TODO Implement this
-		return 0;
+		return customerId;
 	}
 	
 	/**
      * Retrieves the address of the customer.  
      */
 	public String getAddress() {
-		// TODO Implement this
-		return null;
+		return address;
 	}
 	
 	/**
      * Retrieves the distance of the customer from the store.  
      */
 	public int getDistance() {
-		// TODO Implement this
-		return 0;
+		return distance;
 	}
 
 	
@@ -49,8 +67,7 @@ public class Customer {
      * @return A list of receipts.
      */
 	public List<OrderReceipt> getCustomerReceiptList() {
-		// TODO Implement this
-		return null;
+		return listOfReciepts;
 	}
 	
 	/**
@@ -59,16 +76,26 @@ public class Customer {
      * @return Amount of money left.   
      */
 	public int getAvailableCreditAmount() {
-		// TODO Implement this
-		return 0;
+		return availableAmountInCreditCard.get();
 	}
 	
 	/**
      * Retrieves this customers credit card serial number.    
      */
 	public int getCreditNumber() {
-		// TODO Implement this
-		return 0;
+		return creditCard;
 	}
-	
+
+	/**
+	 * Charges the customer's credit card the given amount , always succeeds.
+	 * @param amount
+	 */
+    public void charge(int amount) {
+    	int currentVal;
+    	int nextVal;
+    	do{
+    		currentVal = availableAmountInCreditCard.get();
+    		nextVal = currentVal - amount;
+		}while(!availableAmountInCreditCard.compareAndSet(currentVal,nextVal));
+    }
 }
