@@ -1,6 +1,8 @@
 package bgu.spl.mics.application.messages.Events;
 
-public class getMeMyVehicleEvent {
+import bgu.spl.mics.Event;
+
+public class getMeMyVehicleEvent implements Event {
     private String bookName;
     private String address;
     private int distance;
