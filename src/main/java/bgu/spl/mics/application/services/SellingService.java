@@ -40,16 +40,16 @@ public class SellingService extends MicroService{
 			}
 		);
     subscribeEvent(BookOrderEvent.class,bookOrderEvent -> {
-    	int processTick = currentTick;
-		Future<Integer> availableBookPrice = sendEvent(new CheckAvailabilityAndPriceEvent(bookOrderEvent.getBookName()));
-		if(availableBookPrice!=null){
+    	int processTick = currentTick; System.out.println(this.getName() + "Recieved BookOrderEvent And Current tick is:" + currentTick);
+		Future<Integer> availableBookPrice = sendEvent(new CheckAvailabilityAndPriceEvent(bookOrderEvent.getBookName()));System.out.println(this.getName() + "sent CheckAvilabilityAndPriceEvent And Current tick is:" + currentTick);
+		if(availableBookPrice!=null){ System.out.println(this.getName() + "Recieved Future for CheckAvilabilityAndPriceEvent And its not null  And as well  Current tick is:" + currentTick);
 			Integer bookPrice = availableBookPrice.get();
-			if(bookPrice!=-1){
+			if(bookPrice!=-1){System.out.println(this.getName() + "there is an avilable book at the moment Current tick is:" + currentTick);
 				synchronized (bookOrderEvent.getCustomer()){
-					if(bookOrderEvent.getCustomer().getAvailableCreditAmount() >= bookPrice) {
+					if(bookOrderEvent.getCustomer().getAvailableCreditAmount() >= bookPrice) {System.out.println(this.getName() + "Have enough Money to Buy A book And Current tick is:" + currentTick);
 						Future<Boolean> beenTaken = sendEvent(new TakeBookEvent(bookOrderEvent.getBookName()));
-						if(beenTaken!=null&&beenTaken.get()) {
-							OrderReceipt receipt = new OrderReceipt(0,
+						if(beenTaken!=null&&beenTaken.get()) {System.out.println(this.getName() + "Has managed to take a book And Current tick is:" + currentTick);
+							OrderReceipt reciept = new OrderReceipt(0,
 									bookOrderEvent.getCustomer().getName(),
 									bookOrderEvent.getCustomer().getId(),
 									bookOrderEvent.getBookName(),
@@ -57,24 +57,37 @@ public class SellingService extends MicroService{
 									currentTick,
 									processTick,
 									bookOrderEvent.getOrderTick());
-							moneyRegister.file(receipt);
-							moneyRegister.chargeCreditCard(bookOrderEvent.getCustomer(), bookPrice);
-							sendEvent(new DeliveryEvent(bookOrderEvent.getBookName(), bookOrderEvent.getCustomer().getAddress(), bookOrderEvent.getCustomer().getDistance()));
-							complete(bookOrderEvent,receipt);
+							moneyRegister.file(reciept);
+							moneyRegister.chargeCreditCard(bookOrderEvent.getCustomer(), bookPrice);System.out.println(this.getName() + "Has issued a reciept and charged customer And Current tick is:" + currentTick);
+							sendEvent(new DeliveryEvent(bookOrderEvent.getBookName(), bookOrderEvent.getCustomer().getAddress(), bookOrderEvent.getCustomer().getDistance()));System.out.println(this.getName() + "sent a DeliveryEvent And Current tick is:" + currentTick);
+							complete(bookOrderEvent,reciept);System.out.println(this.getName() + "completed BookOrderEvent And Current tick is:" + currentTick);
 						}
-						else
+						else{
+							System.out.println(this.getName() + "book has been taken before we managed And Current tick is:" + currentTick);
 							complete(bookOrderEvent,null);
+						}
+
 					}
 					else
+					{
+						System.out.println(this.getName() + "we DONT Have enough Money to Buy A book And Current tick is:" + currentTick);
 						complete(bookOrderEvent,null);
+					}
+
 				}
 			}
-			else
+			else{
+				System.out.println(this.getName() + "there is NO avilable book at the moment Current tick is:" + currentTick);
 				complete(bookOrderEvent,null);
+			}
+
 		}
-		else
+		else{
+			System.out.println(this.getName() + "Recieved null instead of Future for CheckAvilabilityAndPriceEvent  Current tick is:" + currentTick);
 			complete(bookOrderEvent,null);
+        }
     }
+
 
 
 	);
@@ -82,6 +95,8 @@ public class SellingService extends MicroService{
 	}
 
 	private void finishOperation() {
+		System.out.println(this.getName()+"terminated At " + this.currentTick);
+		terminate();
 	}
 
 }
