@@ -66,12 +66,16 @@ public class APIService extends MicroService{
 					System.out.println( getName() + " sent Order for Book: "+bookName);
 					//there is a registered SellingService
 					if(fut!=null) {
+						System.out.println( getName() + " got not null futre fororder of book : " +bookName);
 						OrderReceipt receipt = fut.get();
+						System.out.println( getName() + " got Receipt for book : " +bookName);
 						//order completed
 						if (receipt != null) {
 							customer.addReceipt(receipt);
 							System.out.println( getName() + " got and added to customer Receipt: " +receipt);
 						}
+						else
+							System.out.println( getName() + " coudlnt finish order for book: "+bookName);
 					}
 				}
 			}

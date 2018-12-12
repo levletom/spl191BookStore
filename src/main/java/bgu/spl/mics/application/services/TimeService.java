@@ -40,7 +40,7 @@ public class TimeService extends MicroService {
 				public void run(){
 					tick.incrementAndGet();
 					if(tick.get() < numberOfTicksBeforeTermination) {
-						sendBroadcast(new TickBroadcast(3, false));
+						sendBroadcast(new TickBroadcast(tick.get(), false));
 						System.out.println(getName() + " sent Tick: " + tick.get());
 					}
 					    else{
@@ -49,7 +49,7 @@ public class TimeService extends MicroService {
 					    	timer.cancel();
 					    }
 				}
-		}, numberOfMillieSecondsForEachClockTick);
+		},0, numberOfMillieSecondsForEachClockTick);
 
 	}
 

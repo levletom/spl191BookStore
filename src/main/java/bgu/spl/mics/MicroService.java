@@ -130,7 +130,7 @@ public abstract class MicroService implements Runnable {
      *               {@code e}.
      */
     protected final <T> void complete(Event<T> e, T result) {
-        if(e!=null&result!=null)
+        if(e!=null)
             messageBus.complete(e,result);
     }
 
