@@ -40,21 +40,43 @@ public class SellingService extends MicroService{
 	);
     subscribeEvent(BookOrderEvent.class,bookOrderEvent -> {
     	int processTick = currentTick;
-		Future<Integer> availableBookPrice = sendEvent(new CheckAvailabilityAndPriceEvent(bookOrderEvent.getBookName());
-		Integer bookPrice = availableBookPrice.get();
-		synchronized (bookOrderEvent.getCustomer()){
-			if(bookOrderEvent.getCustomer().getAvailableCreditAmount() >= bookPrice) {
-				Future<OrderReceipt> orderReciept = sendEvent(new TakeBookEvent(bookOrderEvent.getBookName());
-				OrderReceipt thisOrderReciept = orderReciept.get();
-				moneyRegister.file(thisOrderReciept);
-				moneyRegister.chargeCreditCard(bookOrderEvent.getCustomer(),bookPrice);
-				Future<Object> wasDelivered = sendEvent(new DeliveryEvent(bookOrderEvent.getBookName(),bookOrderEvent.getCustomer().getAddress(),bookOrderEvent.getCustomer().getDistance()));
-
+		Future<Integer> availableBookPrice = sendEvent(new CheckAvailabilityAndPriceEvent(bookOrderEvent.getBookName()));
+		if(availableBookPrice!=null){
+			Integer bookPrice = availableBookPrice.get();
+			if(bookPrice!=-1){
+				synchronized (bookOrderEvent.getCustomer()){
+					if(bookOrderEvent.getCustomer().getAvailableCreditAmount() >= bookPrice) {
+						Future<Boolean> beenTaken = sendEvent(new TakeBookEvent(bookOrderEvent.getBookName()));
+						if(beenTaken!=null&&beenTaken.get()) {
+							OrderReceipt receipt = new OrderReceipt(0,
+									bookOrderEvent.getCustomer().getName(),
+									bookOrderEvent.getCustomer().getId(),
+									bookOrderEvent.getBookName(),
+									bookPrice,
+									currentTick,
+									processTick,
+									bookOrderEvent.getOrderTick());
+							moneyRegister.file(receipt);
+							moneyRegister.chargeCreditCard(bookOrderEvent.getCustomer(), bookPrice);
+							sendEvent(new DeliveryEvent(bookOrderEvent.getBookName(), bookOrderEvent.getCustomer().getAddress(), bookOrderEvent.getCustomer().getDistance()));
+							complete(bookOrderEvent,receipt);
+						}
+						else
+							complete(bookOrderEvent,null);
+					}
+					else
+						complete(bookOrderEvent,null);
+				}
 			}
 			else
-				return null;
+				complete(bookOrderEvent,null);
 		}
-	});
+		else
+			complete(bookOrderEvent,null);
+    }
+
+
+	);
 
 	}
 

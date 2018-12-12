@@ -1,6 +1,12 @@
 package bgu.spl.mics.application.services;
 
+import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.Broadcasts.TickBroadcast;
+import bgu.spl.mics.application.messages.Events.CheckAvailabilityAndPriceEvent;
+import bgu.spl.mics.application.messages.Events.TakeBookEvent;
+import bgu.spl.mics.application.passiveObjects.Inventory;
+import bgu.spl.mics.application.passiveObjects.OrderResult;
 
 /**
  * InventoryService is in charge of the book inventory and stock.
@@ -13,16 +19,37 @@ import bgu.spl.mics.MicroService;
  */
 
 public class InventoryService extends MicroService{
-
-	public InventoryService() {
-		super("Change_This_Name");
-		// TODO Implement this
+   private int currentTick;
+   private Inventory inventory;
+	public InventoryService(int id) {
+		super("InventoryService_"+id);
+		Inventory.getInstance();
 	}
 
 	@Override
 	protected void initialize() {
-		// TODO Implement this
-		
+		subscribeBroadcast(TickBroadcast.class , tickBroadCast ->{
+			currentTick = tickBroadCast.getTick();
+			if(tickBroadCast.isFinalTick())
+				finishOperation();
+		});
+		subscribeEvent(CheckAvailabilityAndPriceEvent.class , checkAvailabilityAndPrice->{
+			String bookNameToCheck = checkAvailabilityAndPrice.getBookName();
+			Integer price = inventory.checkAvailabiltyAndGetPrice(bookNameToCheck);
+			complete(checkAvailabilityAndPrice,price);
+		});
+		subscribeEvent(TakeBookEvent.class,takeBookEvent->{
+			Future<Boolean> toReturn = new Future<>();
+			String bookNameToTake = takeBookEvent.getBookName();
+			if(inventory.take(bookNameToTake) == OrderResult.SUCCESSFULLY_TAKEN)
+				complete(takeBookEvent,true);
+			else
+				complete(takeBookEvent,false);
+		});
+
+	}
+
+	private void finishOperation() {
 	}
 
 }
