@@ -16,9 +16,10 @@ public class BookStoreRunner {
 
     private static InputJsonReciver g;
     public static void main(String[] args) {
+        String jsonInputFilePath = args[0];
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
-        File file = new File("input.json");
+        File file = new File(jsonInputFilePath);
 
         try(Reader reader = new InputStreamReader(new FileInputStream(file))){
              g = gson.fromJson(reader,InputJsonReciver.class);
