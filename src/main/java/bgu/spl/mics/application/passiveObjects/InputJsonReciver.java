@@ -49,7 +49,7 @@ public class InputJsonReciver {
             return customers;
         }
 
-        private class TimeHolder {
+        public class TimeHolder {
            private int speed;
            private int duration;
 
@@ -72,7 +72,7 @@ public class InputJsonReciver {
         }
     }
 
-    private class JCustomer {
+    public class JCustomer {
         int id;
         String name;
         String address;
@@ -104,7 +104,7 @@ public class InputJsonReciver {
             return orderSchedule;
         }
 
-        private class CreditCard {
+        public class CreditCard {
             int amount;
             int number;
 
