@@ -39,15 +39,17 @@ public class TimeService extends MicroService {
 			timer.schedule(new TimerTask(){
 				public void run(){
 					tick.incrementAndGet();
-					if(tick.get() < numberOfTicksBeforeTermination)
-					    sendBroadcast(new TickBroadcast(tick.get(),false));
+					if(tick.get() < numberOfTicksBeforeTermination) {
+						sendBroadcast(new TickBroadcast(tick.get(), false));
+						System.out.println(getName() + " sent Tick: " + tick.get());
+					}
 					    else{
 					    	sendBroadcast(new TickBroadcast(tick.get(),true));
-							System.out.println( getName() + " sent Tick: " +tick.get());
+							System.out.println( getName() + " sent FinalTick: " +tick.get());
 					    	timer.cancel();
 					    }
 				}
-		}, 1000*numberOfMillieSecondsForEachClockTick);
+		}, numberOfMillieSecondsForEachClockTick);
 
 	}
 
