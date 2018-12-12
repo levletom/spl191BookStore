@@ -8,6 +8,10 @@ package bgu.spl.mics.application.passiveObjects;
  */
 public class BookInventoryInfo{
 
+	private String bookTitle;
+	private int amount;
+	private int price;
+
 	/**
 	 * copy constructor
 	 * @param bookInventoryInfo

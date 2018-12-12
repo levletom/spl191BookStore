@@ -7,20 +7,20 @@ public class Order implements Comparable<Order> {
      * on witch to make the OrderBookEvent
      * Note: this class has a natural ordering that is inconsistent with equals
      */
-    private String bookName;
-    private int timeTick;
+    private String bookTitle;
+    private int tick;
 
     public Order(String bookName, int timeTick) {
-        this.bookName = bookName;
-        this.timeTick = timeTick;
+        this.bookTitle = bookName;
+        this.tick = timeTick;
     }
 
     public String getBookName() {
-        return bookName;
+        return bookTitle;
     }
 
     public int getTimeTick() {
-        return timeTick;
+        return tick;
     }
 
     /**
@@ -32,6 +32,6 @@ public class Order implements Comparable<Order> {
      */
     @Override
     public int compareTo(Order o) {
-        return this.timeTick-o.timeTick;
+        return this.tick -o.tick;
     }
 }
