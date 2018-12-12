@@ -52,20 +52,26 @@ public class APIService extends MicroService{
 	protected void initialize() {
 		System.out.println("APIService " + getName() + " started");
 		subscribeBroadcast(TickBroadcast.class,tickBroadcast ->{
-			if(tickBroadcast.isFinalTick())
+			System.out.println( getName() + " Recieved Tick: "+tickBroadcast.getTick());
+			if(tickBroadcast.isFinalTick()) {
 				finishOperations();
+				return;
+			}
 			Queue<String> ordersForTick = tickToBookMap.get(tickBroadcast.getTick());
 			if(ordersForTick!=null){
 				//proccess all orders for this tick
 				while(!ordersForTick.isEmpty()){
 					String bookName = ordersForTick.remove();
 					Future<OrderReceipt> fut = (Future<OrderReceipt>)sendEvent(new BookOrderEvent(customer,bookName,tickBroadcast.getTick()));
+					System.out.println( getName() + " sent Order for Book: "+bookName);
 					//there is a registered SellingService
 					if(fut!=null) {
 						OrderReceipt receipt = fut.get();
 						//order completed
-						if (receipt != null)
+						if (receipt != null) {
 							customer.addReceipt(receipt);
+							System.out.println( getName() + " got and added to customer Receipt: " +receipt);
+						}
 					}
 				}
 			}
@@ -77,6 +83,8 @@ public class APIService extends MicroService{
 	 * finil operations
 	 */
 	private void finishOperations() {
+		System.out.println( getName() + "GraceFully Called Terminate");
+		terminate();
 	}
 
 }

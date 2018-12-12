@@ -29,15 +29,18 @@ public class ResourceService extends MicroService{
 	protected void initialize() {
 		System.out.println( getName() + " started");
 		subscribeBroadcast(TickBroadcast.class, tickBroadcast -> {
+			System.out.println( getName() + " Recieved Tick: "+tickBroadcast.getTick());
 			this.lastTick = tickBroadcast.getTick();
 			if (tickBroadcast.isFinalTick()) {
 				finishOperations();
 			}
 		});
 		subscribeEvent(GetMeMyVehicleEvent.class,getMeMyVehicleEvent->{
+			System.out.println( getName() + " Recieved getMeMyVehicleEvent: "+" on tick "+lastTick);
 			Future<DeliveryVehicle> vehicleFuture = resourcesHolder.acquireVehicle();
 			if(vehicleFuture!=null) {
 				DeliveryVehicle vehicle = vehicleFuture.get();
+				System.out.println( getName() + " Recieved vehicle "+" on tick "+lastTick);
 				complete(getMeMyVehicleEvent, vehicle);
 			}
 			//no more cars.
@@ -48,6 +51,8 @@ public class ResourceService extends MicroService{
 	}
 
 	private void finishOperations() {
+		System.out.println( getName() + "GraceFully Called Terminate");
+		terminate();
 	}
 
 }
