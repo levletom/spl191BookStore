@@ -1,12 +1,13 @@
 {
   "initialInventory": [
-  {"bookTitle": "Harry Poter", "amount": 10, "price": 90},
-  {"bookTitle": "The Hunger Games", "amount": 90, "price": 102}
+  {"bookTitle": "Harry Poter", "amount": 10, "price": 10},
+  {"bookTitle": "The Hunger Games", "amount": 90, "price": 10}
   ],
   "initialResources":[
    {"vehicles":[
      {"license":123483, "speed": 2},
      {"license":999994, "speed": 4}
+
      ]
      }
     ],
@@ -18,7 +19,7 @@
     "selling": 6,
     "inventoryService": 3,
     "logistics": 4,
-    "resourcesService": 2,
+    "resourcesService": 1,
     "customers": [
      {
         "id": 123456789,
@@ -38,7 +39,7 @@
         "distance":12,
          "creditCard":{"number":453536,"amount":220},
     "orderSchedule": [
-        {"bookTitle": "The Hunger Games", "tick": 12}
+        {"bookTitle": "The Hunger Games", "tick": 3}
     ]
     }
   ]

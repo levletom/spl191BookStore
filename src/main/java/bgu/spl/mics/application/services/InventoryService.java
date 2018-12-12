@@ -30,6 +30,7 @@ public class InventoryService extends MicroService{
 	protected void initialize() {
 		System.out.println( getName() + " started");
 		subscribeBroadcast(TickBroadcast.class , tickBroadCast ->{
+			System.out.println( getName() + " Recieved Tick: "+tickBroadCast.getTick());
 			currentTick = tickBroadCast.getTick();
 			if(tickBroadCast.isFinalTick())
 				finishOperation();

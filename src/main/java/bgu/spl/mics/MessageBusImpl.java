@@ -122,14 +122,16 @@ public class MessageBusImpl implements MessageBus {
 	public void sendBroadcast(Broadcast b) {
 		if(b!=null) {
 			BlockingQueue<MicroService> broadcastTypeQueue = broadcastToMicroServiceQueue.get(b.getClass());
-
-				for (MicroService m :
-						broadcastTypeQueue) {
-					BlockingQueue<Message> microServiceQueue = microServiceToBlockingQueue.get(m);
-					if (microServiceQueue != null)
-						microServiceQueue.add(b);
+			if (broadcastTypeQueue != null) {
+				synchronized (lockForSubscribeBroadcast) {
+					for (MicroService m :
+							broadcastTypeQueue) {
+						BlockingQueue<Message> microServiceQueue = microServiceToBlockingQueue.get(m);
+						if (microServiceQueue != null)
+							microServiceQueue.add(b);
+					}
 				}
-
+			}
 		}
 	}
 
