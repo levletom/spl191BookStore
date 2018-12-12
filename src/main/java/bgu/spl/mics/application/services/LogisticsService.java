@@ -1,7 +1,11 @@
 package bgu.spl.mics.application.services;
 
+import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.Broadcasts.TickBroadcast;
+import bgu.spl.mics.application.messages.Events.DeliveryEvent;
+import bgu.spl.mics.application.messages.Events.GetMeMyVehicleEvent;
+import bgu.spl.mics.application.passiveObjects.DeliveryVehicle;
 
 /**
  * Logistic service in charge of delivering books that have been purchased to customers.
@@ -21,20 +25,30 @@ public class LogisticsService extends MicroService {
 
 	@Override
 	protected void initialize() {
-		System.out.println("LogisticService " + getName() + " started");
-		subscribeBroadcast(TickBroadcast.class, tickBroadcast ->{
+		System.out.println( getName() + " started");
+		subscribeBroadcast(TickBroadcast.class, tickBroadcast -> {
 			this.lastTick = tickBroadcast.getTick();
-			if(tickBroadcast.isFinalTick()){
-				finishiOperations();
+			if (tickBroadcast.isFinalTick()) {
+				finishOperations();
 			}
 		});
-		
+		subscribeEvent(DeliveryEvent.class, deliveryEvent->{
+			Future<DeliveryVehicle> fut = (Future<DeliveryVehicle>)sendEvent(new GetMeMyVehicleEvent());
+			if(fut!=null) {
+				DeliveryVehicle vehicle = fut.get();
+				if (vehicle != null) {
+					vehicle.deliver(deliveryEvent.getAddress(), deliveryEvent.getDistance());
+				}
+			}
+			// no resource servce OR done.
+			complete(deliveryEvent,null);
+		});
 	}
 
 	/**
 	 * operations to be done upon final tick
 	 */
-	private void finishiOperations() {
+	private void finishOperations() {
 	}
 
 }
