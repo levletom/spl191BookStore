@@ -12,12 +12,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  * You may add fields and methods to this class as you see fit (including public methods).
  */
 public class Customer {
-    private final String customerName;
-    private final int customerId;
-    private final String address;
-    private final int distance;
+    private String customerName;
+    private int customerId;
+    private String address;
+    private int distance;
     private List<OrderReceipt> listOfReciepts;
-    private final int creditCard;
+    private int creditCard;
     private AtomicInteger availableAmountInCreditCard;
 
 
@@ -30,6 +30,7 @@ public class Customer {
 		this.availableAmountInCreditCard = availableAmountInCreditCard;
 		listOfReciepts = new Vector<>();
 	}
+
 
 	/**
      * Retrieves the name of the customer.

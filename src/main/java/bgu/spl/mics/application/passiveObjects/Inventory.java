@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.passiveObjects;
 
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
@@ -50,8 +51,16 @@ public class Inventory {
 	 * @return a copy array of inventory info
 	 */
 	public BookInventoryInfo[] getBookInventoryForTestPurposeOnly() {
-		//TODO: Implement this
-		return null;
+		Collection<BookInventoryInfo> infos = inventoryInfos.values();
+		BookInventoryInfo[] ans = new BookInventoryInfo[infos.size()];
+		int i = 0;
+		for (BookInventoryInfo b :
+				infos) {
+			ans[i] = b;
+			i++;
+		}
+		return ans;
+
 	}
 	
 	/**
@@ -104,6 +113,8 @@ public class Inventory {
 	 * destroys all fields so tests wont depend on each other
 	 */
 	public void DestroyAllFieldsForTestPurposeOnly() {
+		inventoryInfos = new ConcurrentHashMap<>();
+		bookToSemaphore = new ConcurrentHashMap<>();
 	}
 
 
