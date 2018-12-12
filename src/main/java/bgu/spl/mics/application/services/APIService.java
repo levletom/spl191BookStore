@@ -52,6 +52,8 @@ public class APIService extends MicroService{
 	protected void initialize() {
 		System.out.println("APIService " + getName() + " started");
 		subscribeBroadcast(TickBroadcast.class,tickBroadcast ->{
+			if(tickBroadcast.isFinalTick())
+				finishOperations();
 			Queue<String> ordersForTick = tickToBookMap.get(tickBroadcast.getTick());
 			if(ordersForTick!=null){
 				while(!ordersForTick.isEmpty()){
@@ -64,6 +66,12 @@ public class APIService extends MicroService{
 			}
 		});
 		
+	}
+
+	/**
+	 * finil operations
+	 */
+	private void finishOperations() {
 	}
 
 }
