@@ -68,8 +68,8 @@ public class BookInventoryInfo{
 		int nexVal;
 		do{
 			currntVal = amount.get();
-			nexVal = currntVal+1;
-		}while(amount.compareAndSet(currntVal,nexVal));
+			nexVal = currntVal-1;
+		}while(!amount.compareAndSet(currntVal,nexVal));
 
 	}
 }

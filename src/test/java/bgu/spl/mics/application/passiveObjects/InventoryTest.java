@@ -1,4 +1,4 @@
-package java.bgu.spl.mics.application.passiveObjects;
+package bgu.spl.mics.application.passiveObjects;
 
 import bgu.spl.mics.application.passiveObjects.BookInventoryInfo;
 import bgu.spl.mics.application.passiveObjects.Inventory;
@@ -53,8 +53,21 @@ public class InventoryTest {
         //create BookinventoryInfoInterFace
         BookInventoryInfo[]  bookArr= createBookInventoryInfoArrayOfSize(100);
         inv.load(bookArr);
+
         BookInventoryInfo[] retArr = inv.getBookInventoryForTestPurposeOnly();
-        assertArrayEquals(bookArr,retArr);
+        for (BookInventoryInfo b :
+                bookArr) {
+            boolean contains = false;
+            for (BookInventoryInfo o :
+                    retArr){
+                if(o.getBookTitle().equals(b.getBookTitle())&&o.getAmountInInventory()==b.getAmountInInventory()&&o.getPrice()==b.getPrice()){
+                    contains = true;
+
+                }
+            }
+            assertTrue(contains);
+        }
+
     }
 
     @Test
@@ -106,7 +119,7 @@ public class InventoryTest {
 
     @Test
     public void take_In_inventory_does_not_affect_other_book_inventory(){
-        BookInventoryInfo[] bookArr = createBookInventoryInfoArrayOfSize(50);
+        BookInventoryInfo[] bookArr = createBookInventoryInfoArrayOfSize(10);
         inv.load(bookArr);
         inv.take("Name 5");
         BookInventoryInfo[] retArr = inv.getBookInventoryForTestPurposeOnly();
