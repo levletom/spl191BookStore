@@ -13,7 +13,7 @@ public class DeliveryEvent implements Event {
         this.distance = distance;
     }
 
-   
+
 
     public String getAddress() {
         return address;

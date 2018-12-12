@@ -36,8 +36,13 @@ public class ResourceService extends MicroService{
 		});
 		subscribeEvent(GetMeMyVehicleEvent.class,getMeMyVehicleEvent->{
 			Future<DeliveryVehicle> vehicleFuture = resourcesHolder.acquireVehicle();
-			DeliveryVehicle vehicle = vehicleFuture.get();
-			complete(getMeMyVehicleEvent,vehicle);
+			if(vehicleFuture!=null) {
+				DeliveryVehicle vehicle = vehicleFuture.get();
+				complete(getMeMyVehicleEvent, vehicle);
+			}
+			//no more cars.
+			else
+				complete(getMeMyVehicleEvent,null);
 		});
 		
 	}

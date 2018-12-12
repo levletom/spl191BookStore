@@ -59,9 +59,12 @@ public class APIService extends MicroService{
 				while(!ordersForTick.isEmpty()){
 					String bookName = ordersForTick.remove();
 					Future<OrderReceipt> fut = (Future<OrderReceipt>)sendEvent(new BookOrderEvent(customer,bookName,tickBroadcast.getTick()));
-					OrderReceipt receipt = fut.get();
-					if(receipt!=null)
-						customer.addReceipt(receipt);
+					//there is a registered SellingService
+					if(fut!=null) {
+						OrderReceipt receipt = fut.get();
+						if (receipt != null)
+							customer.addReceipt(receipt);
+					}
 				}
 			}
 		});

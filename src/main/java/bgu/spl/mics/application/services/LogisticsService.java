@@ -34,10 +34,13 @@ public class LogisticsService extends MicroService {
 		});
 		subscribeEvent(DeliveryEvent.class, deliveryEvent->{
 			Future<DeliveryVehicle> fut = (Future<DeliveryVehicle>)sendEvent(new GetMeMyVehicleEvent());
-			DeliveryVehicle vehicle = fut.get();
-			if(vehicle!=null){
-				vehicle.deliver(deliveryEvent.getAddress(),deliveryEvent.getDistance());
+			if(fut!=null) {
+				DeliveryVehicle vehicle = fut.get();
+				if (vehicle != null) {
+					vehicle.deliver(deliveryEvent.getAddress(), deliveryEvent.getDistance());
+				}
 			}
+			// no resource servce OR done.
 			complete(deliveryEvent,null);
 		});
 	}
