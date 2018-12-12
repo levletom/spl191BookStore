@@ -1,8 +1,14 @@
 package bgu.spl.mics.application.services;
 
+import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
-import bgu.spl.mics.application.passiveObjects.Customer;
+import bgu.spl.mics.application.messages.Broadcasts.TickBroadcast;
+import bgu.spl.mics.application.messages.Events.BookOrderEvent;
+import bgu.spl.mics.application.messages.Events.CheckAvailabilityAndPriceEvent;
+import bgu.spl.mics.application.messages.Events.DeliveryEvent;
+import bgu.spl.mics.application.messages.Events.TakeBookEvent;
 import bgu.spl.mics.application.passiveObjects.MoneyRegister;
+import bgu.spl.mics.application.passiveObjects.OrderReceipt;
 
 /**
  * Selling service in charge of taking orders from customers.
@@ -26,9 +32,33 @@ public class SellingService extends MicroService{
 
 	@Override
 	protected void initialize() {
-	//we will need to implement Timeservice	subscribeBroadcast(TimeBroadCast, () ->)
+	subscribeBroadcast(TickBroadcast.class , tickBroadCast ->{
+		currentTick = tickBroadCast.getTick();
+		if(tickBroadCast.isFinalTick())
+			finishOperation();
+			}
+	);
+    subscribeEvent(BookOrderEvent.class,bookOrderEvent -> {
+    	int processTick = currentTick;
+		Future<Integer> availableBookPrice = sendEvent(new CheckAvailabilityAndPriceEvent(bookOrderEvent.getBookName());
+		Integer bookPrice = availableBookPrice.get();
+		synchronized (bookOrderEvent.getCustomer()){
+			if(bookOrderEvent.getCustomer().getAvailableCreditAmount() >= bookPrice) {
+				Future<OrderReceipt> orderReciept = sendEvent(new TakeBookEvent(bookOrderEvent.getBookName());
+				OrderReceipt thisOrderReciept = orderReciept.get();
+				moneyRegister.file(thisOrderReciept);
+				moneyRegister.chargeCreditCard(bookOrderEvent.getCustomer(),bookPrice);
+				Future<Object> wasDelivered = sendEvent(new DeliveryEvent(bookOrderEvent.getBookName(),bookOrderEvent.getCustomer().getAddress(),bookOrderEvent.getCustomer().getDistance()));
 
-		
+			}
+			else
+				return null;
+		}
+	});
+
+	}
+
+	private void finishOperation() {
 	}
 
 }
