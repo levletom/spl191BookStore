@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.Broadcasts.TickBroadcast;
 
 /**
  * Logistic service in charge of delivering books that have been purchased to customers.
@@ -12,16 +13,28 @@ import bgu.spl.mics.MicroService;
  * You MAY change constructor signatures and even add new public constructors.
  */
 public class LogisticsService extends MicroService {
-
-	public LogisticsService() {
-		super("Change_This_Name");
-		// TODO Implement this
+	private int lastTick;
+	public LogisticsService(String name) {
+		super("Logisitic Service" + name);
+		lastTick = -1;
 	}
 
 	@Override
 	protected void initialize() {
-		// TODO Implement this
+		System.out.println("LogisticService " + getName() + " started");
+		subscribeBroadcast(TickBroadcast.class, tickBroadcast ->{
+			this.lastTick = tickBroadcast.getTick();
+			if(tickBroadcast.isFinalTick()){
+				finishiOperations();
+			}
+		});
 		
+	}
+
+	/**
+	 * operations to be done upon final tick
+	 */
+	private void finishiOperations() {
 	}
 
 }
