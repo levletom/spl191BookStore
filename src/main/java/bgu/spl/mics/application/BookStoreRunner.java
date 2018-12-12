@@ -24,6 +24,7 @@ public class BookStoreRunner {
     private static Vector<Thread> allThreadsExeptTimer;
     private static Thread timerThread;
     public static void main(String[] args) {
+        allThreadsExeptTimer = new Vector<>();
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         String json = args[0];

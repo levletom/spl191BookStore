@@ -32,12 +32,13 @@ public class SellingService extends MicroService{
 
 	@Override
 	protected void initialize() {
-	subscribeBroadcast(TickBroadcast.class , tickBroadCast ->{
-		currentTick = tickBroadCast.getTick();
-		if(tickBroadCast.isFinalTick())
-			finishOperation();
+		System.out.println( getName() + " started");
+		subscribeBroadcast(TickBroadcast.class , tickBroadCast ->{
+			currentTick = tickBroadCast.getTick();
+			if(tickBroadCast.isFinalTick())
+				finishOperation();
 			}
-	);
+		);
     subscribeEvent(BookOrderEvent.class,bookOrderEvent -> {
     	int processTick = currentTick;
 		Future<Integer> availableBookPrice = sendEvent(new CheckAvailabilityAndPriceEvent(bookOrderEvent.getBookName()));

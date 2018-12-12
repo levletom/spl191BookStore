@@ -34,6 +34,7 @@ public class TimeService extends MicroService {
 
 	@Override
 	protected void initialize() {
+		System.out.println( getName() + " started");
 
 			timer.schedule(new TimerTask(){
 				public void run(){
@@ -42,7 +43,8 @@ public class TimeService extends MicroService {
 					    sendBroadcast(new TickBroadcast(tick.get(),false));
 					    else{
 					    	sendBroadcast(new TickBroadcast(tick.get(),true));
-					    timer.cancel();
+							System.out.println( getName() + " sent Tick: " +tick.get());
+					    	timer.cancel();
 					    }
 				}
 		}, 1000*numberOfMillieSecondsForEachClockTick);

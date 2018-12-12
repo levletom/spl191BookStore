@@ -28,6 +28,7 @@ public class InventoryService extends MicroService{
 
 	@Override
 	protected void initialize() {
+		System.out.println( getName() + " started");
 		subscribeBroadcast(TickBroadcast.class , tickBroadCast ->{
 			currentTick = tickBroadCast.getTick();
 			if(tickBroadCast.isFinalTick())
