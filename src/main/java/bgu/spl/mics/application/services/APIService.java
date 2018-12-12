@@ -56,12 +56,14 @@ public class APIService extends MicroService{
 				finishOperations();
 			Queue<String> ordersForTick = tickToBookMap.get(tickBroadcast.getTick());
 			if(ordersForTick!=null){
+				//proccess all orders for this tick
 				while(!ordersForTick.isEmpty()){
 					String bookName = ordersForTick.remove();
 					Future<OrderReceipt> fut = (Future<OrderReceipt>)sendEvent(new BookOrderEvent(customer,bookName,tickBroadcast.getTick()));
 					//there is a registered SellingService
 					if(fut!=null) {
 						OrderReceipt receipt = fut.get();
+						//order completed
 						if (receipt != null)
 							customer.addReceipt(receipt);
 					}
