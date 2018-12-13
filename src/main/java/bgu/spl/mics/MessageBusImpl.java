@@ -1,5 +1,6 @@
 package bgu.spl.mics;
 
+import bgu.spl.mics.application.passiveObjects.DeliveryVehicle;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Vector;
@@ -106,8 +107,10 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public <T> void complete(Event<T> e, T result) {
 		Future<T> fut = eventToItsReturnedFuture.get(e);
-		if (fut != null)
+
+		if (fut != null) {
 			fut.resolve(result);
+		}
 	}
 
 	/**
@@ -230,8 +233,10 @@ public class MessageBusImpl implements MessageBus {
 			BlockingQueue<Message> thisMicroServiceQueue = microServiceToBlockingQueue.get(m);
 			for (Message mes :
 					thisMicroServiceQueue) {
-				if(mes instanceof Event)
-					complete((Event)mes,null);
+				if(mes instanceof Event) {
+
+					complete((Event) mes, null);
+				}
 			}
 			microServiceToBlockingQueue.remove(m);
 		}

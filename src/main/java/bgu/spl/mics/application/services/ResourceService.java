@@ -8,6 +8,8 @@ import bgu.spl.mics.application.messages.Events.ReleaseMyVehicleEvent;
 import bgu.spl.mics.application.passiveObjects.DeliveryVehicle;
 import bgu.spl.mics.application.passiveObjects.ResourcesHolder;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 /**
  * ResourceService is in charge of the store resources - the delivery vehicles.
  * Holds a reference to the {@link ResourceHolder} singleton of the store.
@@ -20,10 +22,12 @@ import bgu.spl.mics.application.passiveObjects.ResourcesHolder;
 public class ResourceService extends MicroService{
 	private int lastTick;
 	private ResourcesHolder resourcesHolder;
+	private ConcurrentLinkedQueue<Future<DeliveryVehicle>> returnedFutreVehicles;
 	public ResourceService(String name) {
 		super("ResourceService " +name);
 		lastTick = -1;
 		resourcesHolder = ResourcesHolder.getInstance();
+		returnedFutreVehicles = new ConcurrentLinkedQueue();
 	}
 
 	@Override
@@ -40,12 +44,11 @@ public class ResourceService extends MicroService{
 			System.out.println( getName() + " Recieved getMeMyVehicleEvent: "+" on tick "+lastTick);
 			Future<DeliveryVehicle> vehicleFuture = resourcesHolder.acquireVehicle();
 			if(vehicleFuture!=null) {
-				System.out.println( getName() + " Recieved vehicle "+" on tick "+lastTick);
+				System.out.println( getName() + " Recieved Futre of vehicle "+" on tick "+lastTick);
+				returnedFutreVehicles.offer(vehicleFuture);
 				complete(getMeMyVehicleEvent,vehicleFuture);
 			}
-			//no more cars.
-			else
-				complete(getMeMyVehicleEvent,null);
+
 		});
 		subscribeEvent(ReleaseMyVehicleEvent.class, ReleaseMyVehicleEvent->{
 			System.out.println(getName() + " just recieved a ReleaseMyVehicleEvent and Currenttick is" + lastTick);
@@ -56,6 +59,10 @@ public class ResourceService extends MicroService{
 
 	private void finishOperations() {
 		System.out.println( getName() + "GraceFully Called Terminate");
+		for (Future<DeliveryVehicle> f :
+				returnedFutreVehicles) {
+			f.resolve(null);
+		}
 		terminate();
 	}
 

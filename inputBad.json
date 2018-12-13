@@ -24,8 +24,8 @@
   ],
   "services":{
     "time": {
-      "speed": 1,
-      "duration": 3
+      "speed": 100,
+      "duration": 10
     },
     "selling": 15,
     "inventoryService": 15,

@@ -42,13 +42,11 @@ public class ResourcesHolder {
      */
 	public Future<DeliveryVehicle> acquireVehicle() {
 		Future<DeliveryVehicle> ans = new Future<>();
-		try {
+
 			futuresOfDeliveryVehicles.offer(ans);
-			return ans;
-		}
-		finally {
 			supplyVehicle();
-		}
+			return ans;
+
 	}
 
 	private void supplyVehicle() {
@@ -57,6 +55,8 @@ public class ResourcesHolder {
 			if(!fut.isDone()) {
 			   fut.resolve(availableVehicles.poll());
 			}
+			else
+				sem.release();
 		}
 	}
 
@@ -68,6 +68,7 @@ public class ResourcesHolder {
      */
 	public void releaseVehicle(DeliveryVehicle vehicle) {
 		availableVehicles.offer(vehicle);
+		sem.release();
 		supplyVehicle();
 	}
 	
@@ -80,7 +81,7 @@ public class ResourcesHolder {
 		for(int i=0;i<vehicles.length;i++){
 			availableVehicles.offer(vehicles[i]);
 		}
-		sem = new Semaphore(vehicles.length-1);
+		sem = new Semaphore(vehicles.length);
 
 	}
 
