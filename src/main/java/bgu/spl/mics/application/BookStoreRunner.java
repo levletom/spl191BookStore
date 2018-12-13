@@ -51,9 +51,10 @@ public class BookStoreRunner {
         createAPIThreads();
         createTimerThread();
         joinAll();
-
+        System.out.println("doneJoin");
         printAlObjects();
 
+        System.out.println("done");
 
     }
 

@@ -47,9 +47,17 @@ public class TimeService extends MicroService {
 					    	sendBroadcast(new TickBroadcast(tick.get(),true));
 							System.out.println( getName() + " sent FinalTick: " +tick.get());
 					    	timer.cancel();
+
 					    }
 				}
 		},0, numberOfMillieSecondsForEachClockTick);
+
+		subscribeBroadcast(TickBroadcast.class , tickBroadCast ->{
+			System.out.println( getName() + " Recieved Tick: "+tickBroadCast.getTick());
+
+			if(tickBroadCast.isFinalTick())
+				terminate();
+		});
 
 	}
 

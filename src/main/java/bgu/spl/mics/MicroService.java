@@ -171,7 +171,8 @@ public abstract class MicroService implements Runnable {
                     callBack.call(thisMessage);
                 else{
                      callBack = typeOfBroadcastToCallback.get(thisMessage.getClass());
-                     callBack.call(thisMessage);
+                     if(callBack!=null)
+                        callBack.call(thisMessage);
                 }
 
             } catch (InterruptedException e) {
@@ -179,6 +180,7 @@ public abstract class MicroService implements Runnable {
             }
         }
         messageBus.unregister(this);
+        System.out.println(getName()+" called unregister");
     }
 
 }

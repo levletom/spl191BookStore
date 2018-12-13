@@ -51,6 +51,7 @@ public class InventoryService extends MicroService{
 	}
 
 	private void finishOperation() {
+		terminate();
 	}
 
 }
