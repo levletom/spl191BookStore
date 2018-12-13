@@ -5,8 +5,8 @@
   ],
   "initialResources":[
    {"vehicles":[
-     {"license":123483, "speed": 2},
-     {"license":999994, "speed": 4}
+     {"license":123483, "speed": 2}
+
 
      ]
      }
@@ -25,7 +25,7 @@
         "id": 123456789,
         "name": "Bruria",
         "address": "NewYork 123",
-        "distance":33,
+        "distance":303,
         "creditCard":{"number":67890,"amount":88},
         "orderSchedule": [
             {"bookTitle": "Harry Poter", "tick": 3},
@@ -36,7 +36,7 @@
         "id": 234567891,
         "name": "Shraga",
         "address": "BeerSheva 3333",
-        "distance":12,
+        "distance":102,
          "creditCard":{"number":453536,"amount":220},
     "orderSchedule": [
         {"bookTitle": "The Hunger Games", "tick": 3}

@@ -28,12 +28,14 @@ public class BookStoreRunner {
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         String json = args[0];
-        File file = new File("input.json");
+
         try(Reader reader = new InputStreamReader(new FileInputStream(json))){
              g = gson.fromJson(reader,InputJsonReciver.class);
 
         }  catch (IOException e) {
             e.printStackTrace();
+            System.out.println("InputFile not found or not valid");
+            return;
         }
 
         Inventory.getInstance().load(g.getInitialInventory());
@@ -71,7 +73,7 @@ public class BookStoreRunner {
         }
 
         try {
-            Thread.currentThread().sleep(1000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

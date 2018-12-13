@@ -41,7 +41,6 @@ public class InventoryService extends MicroService{
 			complete(checkAvailabilityAndPrice,price);
 		});
 		subscribeEvent(TakeBookEvent.class,takeBookEvent->{
-			Future<Boolean> toReturn = new Future<>();
 			String bookNameToTake = takeBookEvent.getBookName();
 			if(inventory.take(bookNameToTake) == OrderResult.SUCCESSFULLY_TAKEN)
 				complete(takeBookEvent,true);
