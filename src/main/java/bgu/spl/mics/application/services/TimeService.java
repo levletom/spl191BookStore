@@ -49,7 +49,7 @@ public class TimeService extends MicroService {
 					    	timer.cancel();
 					    }
 				}
-		}, numberOfMillieSecondsForEachClockTick);
+		},0, numberOfMillieSecondsForEachClockTick);
 
 	}
 

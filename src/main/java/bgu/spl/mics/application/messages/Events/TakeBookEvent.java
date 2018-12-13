@@ -2,7 +2,7 @@ package bgu.spl.mics.application.messages.Events;
 
 import bgu.spl.mics.Event;
 
-public class TakeBookEvent implements Event {
+public class TakeBookEvent implements Event<Boolean> {
     private String bookName;
     private int customerOrderTick;
     private int processTick;

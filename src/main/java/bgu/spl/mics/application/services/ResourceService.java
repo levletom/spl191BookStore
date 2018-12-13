@@ -4,6 +4,7 @@ import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.Broadcasts.TickBroadcast;
 import bgu.spl.mics.application.messages.Events.GetMeMyVehicleEvent;
+import bgu.spl.mics.application.messages.Events.ReleaseMyVehicleEvent;
 import bgu.spl.mics.application.passiveObjects.DeliveryVehicle;
 import bgu.spl.mics.application.passiveObjects.ResourcesHolder;
 
@@ -29,25 +30,33 @@ public class ResourceService extends MicroService{
 	protected void initialize() {
 		System.out.println( getName() + " started");
 		subscribeBroadcast(TickBroadcast.class, tickBroadcast -> {
+			System.out.println( getName() + " Recieved Tick: "+tickBroadcast.getTick());
 			this.lastTick = tickBroadcast.getTick();
 			if (tickBroadcast.isFinalTick()) {
 				finishOperations();
 			}
 		});
 		subscribeEvent(GetMeMyVehicleEvent.class,getMeMyVehicleEvent->{
+			System.out.println( getName() + " Recieved getMeMyVehicleEvent: "+" on tick "+lastTick);
 			Future<DeliveryVehicle> vehicleFuture = resourcesHolder.acquireVehicle();
 			if(vehicleFuture!=null) {
-				DeliveryVehicle vehicle = vehicleFuture.get();
-				complete(getMeMyVehicleEvent, vehicle);
+				System.out.println( getName() + " Recieved vehicle "+" on tick "+lastTick);
+				complete(getMeMyVehicleEvent,vehicleFuture);
 			}
 			//no more cars.
 			else
 				complete(getMeMyVehicleEvent,null);
 		});
-		
+		subscribeEvent(ReleaseMyVehicleEvent.class, ReleaseMyVehicleEvent->{
+			System.out.println(getName() + " just recieved a ReleaseMyVehicleEvent and Currenttick is" + lastTick);
+			resourcesHolder.releaseVehicle(ReleaseMyVehicleEvent.getVehicle());
+			complete(ReleaseMyVehicleEvent,null);
+		});
 	}
 
 	private void finishOperations() {
+		System.out.println( getName() + "GraceFully Called Terminate");
+		terminate();
 	}
 
 }

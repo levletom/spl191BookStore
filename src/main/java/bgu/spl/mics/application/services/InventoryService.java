@@ -23,39 +23,34 @@ public class InventoryService extends MicroService{
    private Inventory inventory;
 	public InventoryService(int id) {
 		super("InventoryService_"+id);
-		Inventory.getInstance();
+		inventory = Inventory.getInstance();
 	}
 
 	@Override
 	protected void initialize() {
 		System.out.println( getName() + " started");
 		subscribeBroadcast(TickBroadcast.class , tickBroadCast ->{
+			System.out.println( getName() + " Recieved Tick: "+tickBroadCast.getTick());
 			currentTick = tickBroadCast.getTick();
 			if(tickBroadCast.isFinalTick())
 				finishOperation();
 		});
-		subscribeEvent(CheckAvailabilityAndPriceEvent.class , checkAvailabilityAndPrice->{ System.out.println(this.getName() + " Recieved CheckAvilabiltyAndPriceEvent and currentTick is: " + currentTick);
-			String bookNameToCheck = checkAvailabilityAndPrice.getBookName(); System.out.println(this.getName() + " bookNameToWorkWith is " + bookNameToCheck + " and currentTick is: " + currentTick);
-			Integer price = inventory.checkAvailabiltyAndGetPrice(bookNameToCheck); System.out.println(this.getName() + " Book price to Work With" + price + " and currentTick is: " + currentTick);
+		subscribeEvent(CheckAvailabilityAndPriceEvent.class , checkAvailabilityAndPrice->{
+			String bookNameToCheck = checkAvailabilityAndPrice.getBookName();
+			Integer price = inventory.checkAvailabiltyAndGetPrice(bookNameToCheck);
 			complete(checkAvailabilityAndPrice,price);
 		});
-		subscribeEvent(TakeBookEvent.class,takeBookEvent->{ System.out.println(this.getName() + " Recieved TakeBookEvent with  " + takeBookEvent.getBookName() + " and currentTick is: " + currentTick);
+		subscribeEvent(TakeBookEvent.class,takeBookEvent->{
 			String bookNameToTake = takeBookEvent.getBookName();
-			if(inventory.take(bookNameToTake) == OrderResult.SUCCESSFULLY_TAKEN) {
-				System.out.println(this.getName() + " SUCCESSFULLY TAKEN and currentTick is: " + currentTick);
-				complete(takeBookEvent, true);
-			}
-			else {
-				System.out.println(this.getName() + " NOT TAKEN and currentTick is: " + currentTick);
-				complete(takeBookEvent, false);
-			}
+			if(inventory.take(bookNameToTake) == OrderResult.SUCCESSFULLY_TAKEN)
+				complete(takeBookEvent,true);
+			else
+				complete(takeBookEvent,false);
 		});
 
 	}
 
-	private void finishOperation(){
-		System.out.println(this.getName() + " is terminating and currentTick is: " + currentTick);
-		terminate();
+	private void finishOperation() {
 	}
 
 }

@@ -2,8 +2,9 @@ package bgu.spl.mics.application.messages.Events;
 
 import bgu.spl.mics.Event;
 import bgu.spl.mics.application.passiveObjects.Customer;
+import bgu.spl.mics.application.passiveObjects.OrderReceipt;
 
-public class BookOrderEvent implements Event {
+public class BookOrderEvent implements Event<OrderReceipt> {
     private Customer customer;
     private String bookName;
     private int orderTick;

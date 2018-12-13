@@ -4,7 +4,9 @@ import bgu.spl.mics.Future;
 import sun.security.provider.NativePRNG;
 
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.Semaphore;
 
 /**
  * Passive object representing the resource manager.
@@ -16,9 +18,13 @@ import java.util.concurrent.LinkedBlockingQueue;
  * You can add ONLY private methods and fields to this class.
  */
 public class ResourcesHolder {
-     BlockingQueue<DeliveryVehicle> availableVehicles;
+     ConcurrentLinkedQueue<DeliveryVehicle> availableVehicles;
+     ConcurrentLinkedQueue<Future<DeliveryVehicle>> futuresOfDeliveryVehicles;
+     Semaphore sem;
 	private ResourcesHolder(){
-		availableVehicles = new LinkedBlockingQueue<>();
+		availableVehicles = new ConcurrentLinkedQueue<>();
+		sem = new Semaphore(0);
+		futuresOfDeliveryVehicles = new ConcurrentLinkedQueue<>();
 	}
 	/**
      * Retrieves the single instance of this class.
@@ -36,18 +42,24 @@ public class ResourcesHolder {
      */
 	public Future<DeliveryVehicle> acquireVehicle() {
 		Future<DeliveryVehicle> ans = new Future<>();
-		try{
+		try {
+			futuresOfDeliveryVehicles.offer(ans);
 			return ans;
 		}
 		finally {
-			try {
-				ans.resolve(availableVehicles.take());
-			} catch (InterruptedException e) {
+			supplyVehicle();
+		}
+	}
 
+	private void supplyVehicle() {
+		if(sem.tryAcquire()){
+			Future<DeliveryVehicle> fut = futuresOfDeliveryVehicles.poll();
+			if(!fut.isDone()) {
+			   fut.resolve(availableVehicles.poll());
 			}
 		}
 	}
-	
+
 	/**
      * Releases a specified vehicle, opening it again for the possibility of
      * acquisition.
@@ -56,6 +68,7 @@ public class ResourcesHolder {
      */
 	public void releaseVehicle(DeliveryVehicle vehicle) {
 		availableVehicles.offer(vehicle);
+		supplyVehicle();
 	}
 	
 	/**
@@ -67,6 +80,8 @@ public class ResourcesHolder {
 		for(int i=0;i<vehicles.length;i++){
 			availableVehicles.offer(vehicles[i]);
 		}
+		sem = new Semaphore(vehicles.length-1);
+
 	}
 
 	private static class SingletonHolder {
