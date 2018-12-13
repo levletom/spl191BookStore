@@ -5,15 +5,15 @@
   ],
   "initialResources":[
     {"vehicles":[
-      {"license":223483, "speed": 2},
-      {"license":123483, "speed": 2},
-      {"license":323483, "speed": 2},
-      {"license":423483, "speed": 2},
-      {"license":523483, "speed": 2},
-      {"license":623483, "speed": 2},
-      {"license":723483, "speed": 2},
-      {"license":823483, "speed": 2},
-      {"license":923483, "speed": 2},
+      {"license":223483, "speed": 2000},
+      {"license":123483, "speed": 2000},
+      {"license":323483, "speed": 2000},
+      {"license":423483, "speed": 2000},
+      {"license":523483, "speed": 2000},
+      {"license":623483, "speed": 2000},
+      {"license":723483, "speed": 2000},
+      {"license":823483, "speed": 2000},
+      {"license":923483, "speed": 2000},
       {"license":1023483, "speed": 2}
 
 
