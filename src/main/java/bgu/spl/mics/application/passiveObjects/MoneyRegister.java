@@ -1,6 +1,8 @@
 package bgu.spl.mics.application.passiveObjects;
 
 
+import java.io.*;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -14,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * <p>
  * You can add ONLY private fields and methods to this class as you see fit.
  */
-public class MoneyRegister {
+public class MoneyRegister implements Serializable {
 
   List<OrderReceipt> listOfAllOrderReceipt;
   AtomicInteger totalEarnings;
@@ -76,7 +78,16 @@ public class MoneyRegister {
      * This method is called by the main method in order to generate the output.. 
      */
 	public void printOrderReceipts(String filename) {
-		//TODO: Implement this
+		FileOutputStream fout = null;
+		try {
+			fout = new FileOutputStream(filename);
+			ObjectOutputStream oos = new ObjectOutputStream(fout);
+			oos.writeObject(listOfAllOrderReceipt);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private static class SingletonHolder {

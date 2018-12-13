@@ -1,7 +1,12 @@
 package bgu.spl.mics.application.passiveObjects;
 
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
@@ -106,7 +111,22 @@ public class Inventory {
      * This method is called by the main method in order to generate the output.
      */
 	public void printInventoryToFile(String filename){
-		//TODO: Implement this
+		HashMap<String,Integer> toPrint = new HashMap<>();
+		for (BookInventoryInfo book :
+				inventoryInfos.values()) {
+			toPrint.put(book.getBookTitle(),book.getAmountInInventory());
+		}
+		FileOutputStream fout = null;
+		try {
+			fout = new FileOutputStream(filename);
+			ObjectOutputStream oos = new ObjectOutputStream(fout);
+			oos.writeObject(toPrint);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	/**
