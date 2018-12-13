@@ -30,7 +30,7 @@
     "selling": 15,
     "inventoryService": 15,
     "logistics": 15,
-    "resourcesService": 15,
+    "resourcesService": 1,
     "customers": [
       {
         "id": 123456789,

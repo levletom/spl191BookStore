@@ -61,7 +61,8 @@ public class ResourceService extends MicroService{
 		System.out.println( getName() + "GraceFully Called Terminate");
 		for (Future<DeliveryVehicle> f :
 				returnedFutreVehicles) {
-			f.resolve(null);
+			if(!f.isDone())
+				f.resolve(null);
 		}
 		terminate();
 	}
