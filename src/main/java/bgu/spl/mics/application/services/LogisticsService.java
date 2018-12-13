@@ -5,6 +5,7 @@ import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.Broadcasts.TickBroadcast;
 import bgu.spl.mics.application.messages.Events.DeliveryEvent;
 import bgu.spl.mics.application.messages.Events.GetMeMyVehicleEvent;
+import bgu.spl.mics.application.messages.Events.ReleaseMyVehicleEvent;
 import bgu.spl.mics.application.passiveObjects.DeliveryVehicle;
 
 /**
@@ -35,18 +36,18 @@ public class LogisticsService extends MicroService {
 		});
 		subscribeEvent(DeliveryEvent.class, deliveryEvent->{
 			System.out.println( getName() + " Recieved DeliveryEvent adress: "+deliveryEvent.getAddress()+" distance" + deliveryEvent.getDistance()+" on tick "+lastTick);
-			Future<DeliveryVehicle> fut = sendEvent(new GetMeMyVehicleEvent());
+			Future<Future<DeliveryVehicle>> fut = sendEvent(new GetMeMyVehicleEvent());
 			if(fut!=null) {
-				DeliveryVehicle vehicle = fut.get();
+				DeliveryVehicle vehicle = fut.get().get();
 
 				if (vehicle != null) {
 					System.out.println( getName() + " Recieved vehicle: "+vehicle.getLicense()+" on tick "+lastTick);
 					vehicle.deliver(deliveryEvent.getAddress(), deliveryEvent.getDistance());
 					System.out.println( getName() + " vehicle: "+vehicle.getLicense()+" finished deliver"+" on tick "+lastTick);
-
+                    sendEvent(new ReleaseMyVehicleEvent(vehicle));
 				}
 			}
-			// no resource servce OR done.
+			// no resource service OR done.
 			complete(deliveryEvent,null);
 		});
 	}

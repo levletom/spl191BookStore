@@ -4,6 +4,7 @@ import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.Broadcasts.TickBroadcast;
 import bgu.spl.mics.application.messages.Events.GetMeMyVehicleEvent;
+import bgu.spl.mics.application.messages.Events.ReleaseMyVehicleEvent;
 import bgu.spl.mics.application.passiveObjects.DeliveryVehicle;
 import bgu.spl.mics.application.passiveObjects.ResourcesHolder;
 
@@ -39,15 +40,18 @@ public class ResourceService extends MicroService{
 			System.out.println( getName() + " Recieved getMeMyVehicleEvent: "+" on tick "+lastTick);
 			Future<DeliveryVehicle> vehicleFuture = resourcesHolder.acquireVehicle();
 			if(vehicleFuture!=null) {
-				DeliveryVehicle vehicle = vehicleFuture.get();
 				System.out.println( getName() + " Recieved vehicle "+" on tick "+lastTick);
-				complete(getMeMyVehicleEvent, vehicle);
+				complete(getMeMyVehicleEvent,vehicleFuture);
 			}
 			//no more cars.
 			else
 				complete(getMeMyVehicleEvent,null);
 		});
-		
+		subscribeEvent(ReleaseMyVehicleEvent.class, ReleaseMyVehicleEvent->{
+			System.out.println(getName() + " just recieved a ReleaseMyVehicleEvent and Currenttick is" + lastTick);
+			resourcesHolder.releaseVehicle(ReleaseMyVehicleEvent.getVehicle());
+			complete(ReleaseMyVehicleEvent,null);
+		});
 	}
 
 	private void finishOperations() {

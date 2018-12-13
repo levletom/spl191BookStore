@@ -45,9 +45,5 @@ public class DeliveryVehicle {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		finally {
-			ResourcesHolder.getInstance().releaseVehicle(this);
-		}
-
 	}
 }
