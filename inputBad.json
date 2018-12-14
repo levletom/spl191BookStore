@@ -5,15 +5,15 @@
   ],
   "initialResources":[
     {"vehicles":[
-      {"license":223483, "speed": 2000},
-      {"license":123483, "speed": 2000},
-      {"license":323483, "speed": 2000},
-      {"license":423483, "speed": 2000},
-      {"license":523483, "speed": 2000},
-      {"license":623483, "speed": 2000},
-      {"license":723483, "speed": 2000},
-      {"license":823483, "speed": 2000},
-      {"license":923483, "speed": 2000},
+      {"license":223483, "speed": 2},
+      {"license":123483, "speed": 2},
+      {"license":323483, "speed": 2},
+      {"license":423483, "speed": 2},
+      {"license":523483, "speed": 2},
+      {"license":623483, "speed": 2},
+      {"license":723483, "speed": 2},
+      {"license":823483, "speed": 2},
+      {"license":923483, "speed": 2},
       {"license":1023483, "speed": 2}
 
 
@@ -36,7 +36,7 @@
         "id": 123456789,
         "name": "Bruria",
         "address": "NewYork 123",
-        "distance":303,
+        "distance":3003,
         "creditCard":{"number":67890,"amount":88},
         "orderSchedule": [
           {"bookTitle": "Harry Poter", "tick": 3},
@@ -49,7 +49,7 @@
         "id": 223456789,
         "name": "Bruria",
         "address": "NewYork 123",
-        "distance":303,
+        "distance":3003,
         "creditCard":{"number":67890,"amount":88},
         "orderSchedule": [
           {"bookTitle": "Harry Poter", "tick": 3},
