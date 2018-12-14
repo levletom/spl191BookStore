@@ -1,10 +1,5 @@
 package bgu.spl.mics;
 
-import bgu.spl.mics.application.passiveObjects.DeliveryVehicle;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-import java.util.Queue;
-import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -54,9 +49,7 @@ public class MessageBusImpl implements MessageBus {
         if (m != null && type != null) {
             BlockingQueue<MicroService> specificEventListOfServices = eventToMicroServiceRoundRobinQueue.get(type);
             if (specificEventListOfServices == null) {
-                synchronized (type) {
-                    eventToMicroServiceRoundRobinQueue.putIfAbsent(type, new LinkedBlockingQueue<>());
-                }
+                eventToMicroServiceRoundRobinQueue.putIfAbsent(type, new LinkedBlockingQueue<>());
             }
             specificEventListOfServices = eventToMicroServiceRoundRobinQueue.get(type);
             if (!specificEventListOfServices.contains(m) && microServiceToBlockingQueue.get(m) != null) {
@@ -80,9 +73,7 @@ public class MessageBusImpl implements MessageBus {
         if (type != null && m != null) {
             BlockingQueue<MicroService> specificBroadcastListOfServices = broadcastToMicroServiceQueue.get(type);
             if (specificBroadcastListOfServices == null) {
-                synchronized (type) {
-                    broadcastToMicroServiceQueue.putIfAbsent(type, new LinkedBlockingQueue<>());
-                }
+                broadcastToMicroServiceQueue.putIfAbsent(type, new LinkedBlockingQueue<>());
             }
             specificBroadcastListOfServices = broadcastToMicroServiceQueue.get(type);
             if (!specificBroadcastListOfServices.contains(m) && microServiceToBlockingQueue.get(m) != null) {
@@ -165,11 +156,19 @@ public class MessageBusImpl implements MessageBus {
                 BlockingQueue<Message> specificServiceMessageLoopQueue = microServiceToBlockingQueue.get(serviceToHandleEvent);
 
                 if (specificServiceMessageLoopQueue != null) {
-                    Future<T> returnedFuture = new Future<>();
-                    eventToItsReturnedFuture.put(e, returnedFuture);
-                    specificServiceMessageLoopQueue.offer(e);
-                    return returnedFuture;
+                    //make sure queue doesnt get deleted from unregister
+                    synchronized (specificEventsRoundRobinQueue) {
+                        if(microServiceToBlockingQueue.get(serviceToHandleEvent)!=null) {
+                            Future<T> returnedFuture = new Future<>();
+                            eventToItsReturnedFuture.put(e, returnedFuture);
+                            specificServiceMessageLoopQueue.offer(e);
+                            return returnedFuture;
+                        }
+                        //try again if specific Service unregistered.
+                        else
+                            sendEvent(e);
 
+                    }
                 }
 
 
@@ -228,15 +227,19 @@ public class MessageBusImpl implements MessageBus {
                         eventTypeQueue.remove(m);
                 }
                 typeOfEventVec.clear();
-                BlockingQueue<Message> thisMicroServiceQueue = microServiceToBlockingQueue.get(m);
-                for (Message mes :
-                        thisMicroServiceQueue) {
-                    if (mes instanceof Event) {
 
-                        complete((Event) mes, null);
+                BlockingQueue<Message> thisMicroServiceQueue = microServiceToBlockingQueue.get(m);
+                synchronized (thisMicroServiceQueue) {
+                    for (Message mes :
+                            thisMicroServiceQueue) {
+                        if (mes instanceof Event) {
+
+                            complete((Event) mes, null);
+                        }
                     }
+                    microServiceToBlockingQueue.remove(m);
                 }
-                microServiceToBlockingQueue.remove(m);
+
             }
 
 

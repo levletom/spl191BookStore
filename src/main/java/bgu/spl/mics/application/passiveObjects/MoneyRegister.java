@@ -2,6 +2,7 @@ package bgu.spl.mics.application.passiveObjects;
 
 
 import java.io.*;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
@@ -80,7 +81,7 @@ public class MoneyRegister implements Serializable {
 	public void printOrderReceipts(String filename) {
 		FileOutputStream fout = null;
 		try {
-			fout = new FileOutputStream(filename);
+			fout = new FileOutputStream(Paths.get(filename).toAbsolutePath().toString());
 			ObjectOutputStream oos = new ObjectOutputStream(fout);
 			oos.writeObject(listOfAllOrderReceipt);
 			oos.close();

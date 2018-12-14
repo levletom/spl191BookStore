@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -118,7 +119,7 @@ public class Inventory {
 		}
 		FileOutputStream fout = null;
 		try {
-			fout = new FileOutputStream(filename);
+			fout = new FileOutputStream(Paths.get(filename).toAbsolutePath().toString());
 			ObjectOutputStream oos = new ObjectOutputStream(fout);
 			oos.writeObject(toPrint);
 		} catch (FileNotFoundException e) {
