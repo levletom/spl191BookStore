@@ -27,25 +27,21 @@ public class LogisticsService extends MicroService {
 
     @Override
     protected void initialize() {
-        System.out.println(getName() + " started");
+
         subscribeBroadcast(TickBroadcast.class, tickBroadcast -> {
-            System.out.println(getName() + " Recieved Tick: " + tickBroadcast.getTick());
             this.lastTick = tickBroadcast.getTick();
             if (tickBroadcast.isFinalTick()) {
                 finishOperations();
             }
         });
         subscribeEvent(DeliveryEvent.class, deliveryEvent -> {
-            System.out.println(getName() + " Recieved DeliveryEvent adress: " + deliveryEvent.getAddress() + " distance" + deliveryEvent.getDistance() + " on tick " + lastTick);
             Future<Future<DeliveryVehicle>> fut = sendEvent(new GetMeMyVehicleEvent());
             if (fut != null) {
                 Future<DeliveryVehicle> vehicleFut = fut.get();
                 if (vehicleFut != null) {
                     DeliveryVehicle vehicle = vehicleFut.get();
                     if (vehicle != null) {
-                        System.out.println(getName() + " Recieved vehicle: " + vehicle.getLicense() + " on tick " + lastTick);
                         vehicle.deliver(deliveryEvent.getAddress(), deliveryEvent.getDistance());
-                        System.out.println(getName() + " vehicle: " + vehicle.getLicense() + " finished deliver" + " on tick " + lastTick);
                         sendEvent(new ReleaseMyVehicleEvent(vehicle));
                     }
                 }
@@ -59,7 +55,7 @@ public class LogisticsService extends MicroService {
      * operations to be done upon final tick
      */
     private void finishOperations() {
-        System.out.println(getName() + "GraceFully Called Terminate");
+
         terminate();
     }
 

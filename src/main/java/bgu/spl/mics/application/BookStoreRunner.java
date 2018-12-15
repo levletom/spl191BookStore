@@ -4,8 +4,6 @@ import bgu.spl.mics.application.passiveObjects.*;
 import bgu.spl.mics.application.services.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
 
 import java.io.*;
 import java.util.*;
@@ -52,13 +50,13 @@ public class BookStoreRunner {
         checkThreadsAreReady();
         createTimerThread();
         joinAll();
-        System.out.println("doneJoin");
+
         printAlObjects();
 
 
         //printForYuvalsTestsONLY(args);
 
-        System.out.println("done");
+
 
     }
 
@@ -75,7 +73,7 @@ public class BookStoreRunner {
         str_books = str_books.replaceAll(", ", "\n---------------------------\n").replace("[", "").replace("]", "");
         Print(str_books, dir + "Books");
 
-        List<OrderReceipt> receipts_lst = MoneyRegister.getInstance().getOrderReceipts();
+        List<OrderReceipt> receipts_lst = MoneyRegister.getInstance().getOrderReceiptsForTestsONLY();
         receipts_lst.sort(Comparator.comparing(OrderReceipt::getOrderId));
         receipts_lst.sort(Comparator.comparing(OrderReceipt::getOrderTick));
         OrderReceipt[] receipts = receipts_lst.toArray(new OrderReceipt[0]);

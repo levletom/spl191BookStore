@@ -23,8 +23,6 @@ public class MessageBusImpl implements MessageBus {
     private ConcurrentHashMap<Event, Future> eventToItsReturnedFuture;
     private ConcurrentHashMap<MicroService, BlockingQueue<Class<? extends Event>>> microserviceToTypeOfEventItsRegisteredTo;
     private ConcurrentHashMap<MicroService, BlockingQueue<Class<? extends Broadcast>>> microserviceToTypeOfBroadcastItsRegisteredTo;
-    private Object lockForSubscribeEvent;
-    private Object lockForSubscribeBroadcast;
 
     private static MessageBusImpl instance = null;
 
@@ -36,8 +34,7 @@ public class MessageBusImpl implements MessageBus {
         eventToItsReturnedFuture = new ConcurrentHashMap<>();
         microserviceToTypeOfBroadcastItsRegisteredTo = new ConcurrentHashMap<>();
         microserviceToTypeOfEventItsRegisteredTo = new ConcurrentHashMap<>();
-        lockForSubscribeEvent = new Object();
-        lockForSubscribeBroadcast = new Object();
+
     }
 
     /**

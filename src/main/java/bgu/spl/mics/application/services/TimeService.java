@@ -34,18 +34,18 @@ public class TimeService extends MicroService {
 
 	@Override
 	protected void initialize() {
-		System.out.println( getName() + " started");
+
 
 			timer.schedule(new TimerTask(){
 				public void run(){
 					tick.incrementAndGet();
 					if(tick.get() < numberOfTicksBeforeTermination) {
 						sendBroadcast(new TickBroadcast(tick.get(), false));
-						System.out.println(getName() + " sent Tick: " + tick.get());
+
 					}
 					    else{
 					    	sendBroadcast(new TickBroadcast(tick.get(),true));
-							System.out.println( getName() + " sent FinalTick: " +tick.get());
+
 					    	timer.cancel();
 
 					    }
@@ -53,7 +53,7 @@ public class TimeService extends MicroService {
 		},0, numberOfMillieSecondsForEachClockTick);
 
 		subscribeBroadcast(TickBroadcast.class , tickBroadCast ->{
-			System.out.println( getName() + " Recieved Tick: "+tickBroadCast.getTick());
+
 
 			if(tickBroadCast.isFinalTick())
 				terminate();

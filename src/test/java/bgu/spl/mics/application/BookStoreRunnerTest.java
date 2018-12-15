@@ -39,10 +39,9 @@ public class BookStoreRunnerTest {
 
     @Test
     public void main() throws IOException {
-        int i = 12;
+        int i = 0;
 
 
-        BookStoreRunner bookStoreRunner = new BookStoreRunner();
         String[] args = {"" + i + ".json", "customer" + i, "book" + i, "receipt" + i, "moneyReg" + i, "" + i};
         this.args = args;
         GsonBuilder builder = new GsonBuilder();
@@ -56,7 +55,7 @@ public class BookStoreRunnerTest {
             System.out.println("InputFile not found or not valid");
             return;
         }
-        bookStoreRunner.main(args);
+        BookStoreRunner.main(args);
         ExtractProgramOutput(args);
         BasicTests basicTests = new BasicTests(customers, inventory, receipts, moneyRegister, g);
         testResults = basicTests.runTests().toString();
