@@ -77,7 +77,7 @@ public class APIService extends MicroService {
                     OrderReceipt receipt = fut.get();
                     //order completed
                     if (receipt != null) {
-                        customer.addReceipt(receipt);
+
                         System.out.println(getName() + " got and added to customer Receipt for book: " + receipt.getBookTitle());
                     }
                 }

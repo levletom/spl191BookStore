@@ -53,9 +53,16 @@ public class BookStoreRunner {
         createTimerThread();
         joinAll();
         System.out.println("doneJoin");
-       // printAlObjects();
+        printAlObjects();
 
 
+       // printForYuvalsTestsONLY(args);
+
+        System.out.println("done");
+
+    }
+
+    private static void printForYuvalsTestsONLY(String[] args) {
         int numOfTest = Integer.parseInt(args[0].replace(new File(args[0]).getParent(), "").replace("/", "").replace(".json", ""));
         String dir = new File(args[1]).getParent() + "/" + numOfTest + " - ";
         Customer[] customers1 = customerHashMap.values().toArray(new Customer[0]);
@@ -77,9 +84,6 @@ public class BookStoreRunner {
         Print(str_receipts, dir + "Receipts");
 
         Print(MoneyRegister.getInstance().getTotalEarnings() + "", dir + "Total");
-
-        System.out.println("done");
-
     }
 
     private static void checkThreadsAreReady() {
