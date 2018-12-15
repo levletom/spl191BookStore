@@ -63,9 +63,10 @@ public class SellingService extends MicroService{
 									processTick);
 
 							moneyRegister.file(reciept);
-							moneyRegister.chargeCreditCard(bookOrderEvent.getCustomer(), bookPrice);System.out.println(this.getName() + "Has issued a reciept and charged customer And Current tick is:" + currentTick);
+							moneyRegister.chargeCreditCard(bookOrderEvent.getCustomer(), bookPrice);
+							System.out.println(this.getName() + "Has issued a reciept and charged customer And Current tick is:" + currentTick);
+							//bookOrderEvent.getCustomer().addReceipt(reciept);
 							sendEvent(new DeliveryEvent(bookOrderEvent.getBookName(), bookOrderEvent.getCustomer().getAddress(), bookOrderEvent.getCustomer().getDistance()));System.out.println(this.getName() + "sent a DeliveryEvent And Current tick is:" + currentTick);
-							bookOrderEvent.getCustomer().addReceipt(reciept);
 							complete(bookOrderEvent,reciept);System.out.println(this.getName() + "completed BookOrderEvent And Current tick is:" + currentTick);
 						}
 						else{

@@ -71,16 +71,19 @@ public class APIService extends MicroService {
                         futures.add(fut);
                         System.out.println(getName() + " got not null futre fororder of book : " + bookName);
                     }
+
                 }
+
                 for (Future<OrderReceipt> fut :
                         futures) {
                     OrderReceipt receipt = fut.get();
                     //order completed
                     if (receipt != null) {
-
+                        customer.addReceipt(receipt);
                         System.out.println(getName() + " got and added to customer Receipt for book: " + receipt.getBookTitle());
                     }
                 }
+
 
             }
 

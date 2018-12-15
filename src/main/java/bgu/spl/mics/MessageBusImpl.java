@@ -101,7 +101,7 @@ public class MessageBusImpl implements MessageBus {
     public <T> void complete(Event<T> e, T result) {
         Future<T> fut = eventToItsReturnedFuture.get(e);
 
-        if (fut != null) {
+        if (fut != null&&!fut.isDone()) {
             fut.resolve(result);
         }
     }
@@ -232,6 +232,7 @@ public class MessageBusImpl implements MessageBus {
                 for (Message mes :
                         thisMicroServiceQueue) {
                     if (mes instanceof Event) {
+
 
                         complete((Event) mes, null);
                     }

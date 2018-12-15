@@ -56,7 +56,7 @@ public class BookStoreRunner {
         printAlObjects();
 
 
-       // printForYuvalsTestsONLY(args);
+        //printForYuvalsTestsONLY(args);
 
         System.out.println("done");
 
