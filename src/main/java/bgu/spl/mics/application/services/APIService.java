@@ -7,6 +7,7 @@ import bgu.spl.mics.application.messages.Events.BookOrderEvent;
 import bgu.spl.mics.application.passiveObjects.Customer;
 import bgu.spl.mics.application.passiveObjects.Order;
 import bgu.spl.mics.application.passiveObjects.OrderReceipt;
+import com.sun.org.apache.xpath.internal.operations.Or;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -73,8 +74,20 @@ public class APIService extends MicroService {
                     }
 
                 }
+                //get all future results.
+                while (!futures.isEmpty()) {
+                    Future<OrderReceipt> fut = futures.poll();
+                    if (fut.isDone()) {
+                        OrderReceipt receipt = fut.get();
+                        //order completed
+                        if (receipt != null) {
+                            customer.addReceipt(receipt);
+                        }
+                    } else
+                        futures.offer(fut);
 
-                for (Future<OrderReceipt> fut :
+                }
+                /*for (Future<OrderReceipt> fut :
                         futures) {
                     OrderReceipt receipt = fut.get();
                     //order completed
@@ -83,6 +96,7 @@ public class APIService extends MicroService {
 
                     }
                 }
+                */
 
 
             }
