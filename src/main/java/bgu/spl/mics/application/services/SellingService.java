@@ -65,7 +65,7 @@ public class SellingService extends MicroService{
 							moneyRegister.file(reciept);
 							moneyRegister.chargeCreditCard(bookOrderEvent.getCustomer(), bookPrice);
 
-							//bookOrderEvent.getCustomer().addReceipt(reciept);
+
 							sendEvent(new DeliveryEvent(bookOrderEvent.getBookName(), bookOrderEvent.getCustomer().getAddress(), bookOrderEvent.getCustomer().getDistance()));
 							complete(bookOrderEvent,reciept);
 						}
