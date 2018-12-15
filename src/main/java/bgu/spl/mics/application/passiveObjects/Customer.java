@@ -104,4 +104,17 @@ public class Customer implements Serializable {
 	public void addReceipt(OrderReceipt receipt) {
     	this.listOfReciepts.add(receipt);
 	}
+
+	@Override
+	public String toString() {
+		return "Customer{" +
+				"customerName='" + customerName + '\n' +
+				"\n customerId:" + customerId +
+				"\n address: " + address + '\'' +
+				"\n distance: " + distance +
+				"\n listOfReciepts:=" + listOfReciepts +
+				"\n creditCard:" + creditCard +
+				"\n availableAmountInCreditCard:" + availableAmountInCreditCard +
+				'}';
+	}
 }

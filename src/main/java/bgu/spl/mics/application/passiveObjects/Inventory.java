@@ -8,6 +8,7 @@ import java.io.ObjectOutputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
 
@@ -137,6 +138,19 @@ public class Inventory {
 		bookToSemaphore = new ConcurrentHashMap<>();
 	}
 
+    public HashMap<String, Integer> getBooks() {
+		HashMap<String,Integer> toPrint = new HashMap<>();
+		for (BookInventoryInfo book :
+				inventoryInfos.values()) {
+			toPrint.put(book.getBookTitle(),book.getAmountInInventory());
+		}
+		return toPrint;
+    }
+
+	public ConcurrentHashMap<String, BookInventoryInfo> getBooksInventory() {
+
+		return inventoryInfos;
+	}
 
 
 	private static class SingletonHolder {
