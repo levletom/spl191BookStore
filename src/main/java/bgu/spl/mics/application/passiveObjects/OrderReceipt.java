@@ -88,4 +88,18 @@ public class OrderReceipt implements Serializable {
 	public int getProcessTick() {
 		return processTick;
 	}
+
+	@Override
+	public String toString() {
+		return "OrderReceipt{" +
+				"orderId=" + orderId +
+				"\n seller='" + seller + '\'' +
+				"\ncustomerId=" + customerId +
+				"\n bookTitle='" + bookTitle + '\'' +
+				"\nprice=" + price +
+				"\nissuedTick=" + issuedTick +
+				"\norderTick=" + orderTick +
+				"\nprocessTick=" + processTick +
+				'}';
+	}
 }

@@ -48,7 +48,7 @@ public class MoneyRegister implements Serializable {
 			listOfAllOrderReceipt.add(r);
 			do{
 				currentVal = totalEarnings.get();
-				nextVal = r.getPrice();
+				nextVal = currentVal + r.getPrice();
 			}while(!totalEarnings.compareAndSet(currentVal,nextVal));
 		}
 
@@ -90,6 +90,14 @@ public class MoneyRegister implements Serializable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * //TODO DELETE THIS - FOR TEST ONLY
+	 * @return
+	 */
+	public List<OrderReceipt> getOrderReceipts() {
+		return listOfAllOrderReceipt;
 	}
 
 	private static class SingletonHolder {

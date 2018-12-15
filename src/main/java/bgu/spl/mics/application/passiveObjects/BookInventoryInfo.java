@@ -72,4 +72,13 @@ public class BookInventoryInfo{
 		}while(!amount.compareAndSet(currntVal,nexVal));
 
 	}
+
+	@Override
+	public String toString() {
+		String str = "";
+		str += "title  : " + getBookTitle() + "\n";
+		str += "amount : " + getAmountInInventory() + "\n";
+		str += "price  : " + getPrice();
+		return str;
+	}
 }

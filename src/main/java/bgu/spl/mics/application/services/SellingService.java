@@ -54,13 +54,14 @@ public class SellingService extends MicroService{
 						if(beenTaken!=null && beenTaken.get()!=null && beenTaken.get()) {
 							System.out.println(this.getName() + "Has managed to take a book And Current tick is:" + currentTick);
 							OrderReceipt reciept = new OrderReceipt(0,
-									bookOrderEvent.getCustomer().getName(),
+									getName(),
 									bookOrderEvent.getCustomer().getId(),
 									bookOrderEvent.getBookName(),
 									bookPrice,
 									currentTick,
-									processTick,
-									bookOrderEvent.getOrderTick());
+									bookOrderEvent.getOrderTick(),
+									processTick);
+
 							moneyRegister.file(reciept);
 							moneyRegister.chargeCreditCard(bookOrderEvent.getCustomer(), bookPrice);System.out.println(this.getName() + "Has issued a reciept and charged customer And Current tick is:" + currentTick);
 							sendEvent(new DeliveryEvent(bookOrderEvent.getBookName(), bookOrderEvent.getCustomer().getAddress(), bookOrderEvent.getCustomer().getDistance()));System.out.println(this.getName() + "sent a DeliveryEvent And Current tick is:" + currentTick);
