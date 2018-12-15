@@ -104,6 +104,8 @@ public class BasicTests {
 		for (BookInventoryInfo b :
 				input.getInitialInventory()) {
 			Integer amountByRec = booksOrderedByReceipts.get(b.getBookTitle());
+			if(amountByRec==null)
+				amountByRec = 0;
 			if(amountByRec!=null){
 				if(b.getAmountInInventory()-amountByRec!=inventory.get(b.getBookTitle())){
 					testResults.append("####BASIC-TESTS-ERROR#####\nAmount in inventory of book ");

@@ -1,6 +1,6 @@
 {
   "initialInventory": [
-  {"bookTitle": "Harry Poter", "amount": 10, "price": 10},
+  {"bookTitle": "Harry Poter", "amount": 1000, "price": 10},
   {"bookTitle": "The Hunger Games", "amount": 10, "price": 10}
   ],
   "initialResources":[
@@ -26,7 +26,7 @@
         "name": "Bruria",
         "address": "NewYork 123",
         "distance":303,
-        "creditCard":{"number":67890,"amount":20000 },
+        "creditCard":{"number":67890,"amount":200 },
         "orderSchedule": [
             {"bookTitle": "Harry Poter", "tick": 3},
             {"bookTitle": "The Hunger Games", "tick": 3},
