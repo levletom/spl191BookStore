@@ -39,10 +39,10 @@ public class BookStoreRunnerTest {
 
     @Test
     public void main() throws IOException {
-        int i = 0;
+        int testNum = 1;
 
 
-        String[] args = {"" + i + ".json", "customer" + i, "book" + i, "receipt" + i, "moneyReg" + i, "" + i};
+        String[] args = {"" + testNum + ".json", "customer" + testNum, "book" + testNum, "receipt" + testNum, "moneyReg" + testNum, "" + testNum};
         this.args = args;
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();

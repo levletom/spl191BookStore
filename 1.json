@@ -1,7 +1,7 @@
 {
   "initialInventory": [
   {"bookTitle": "Harry Poter", "amount": 10, "price": 10},
-  {"bookTitle": "The Hunger Games", "amount": 90, "price": 10}
+  {"bookTitle": "The Hunger Games", "amount": 10, "price": 10}
   ],
   "initialResources":[
    {"vehicles":[
@@ -14,7 +14,7 @@
   "services":{
     "time": {
       "speed": 1000,
-      "duration": 3
+      "duration": 10
     },
     "selling": 1,
     "inventoryService": 1,
@@ -26,10 +26,53 @@
         "name": "Bruria",
         "address": "NewYork 123",
         "distance":303,
-        "creditCard":{"number":67890,"amount":88},
+        "creditCard":{"number":67890,"amount":20000 },
         "orderSchedule": [
             {"bookTitle": "Harry Poter", "tick": 3},
-            {"bookTitle": "The Hunger Games", "tick": 3}
+            {"bookTitle": "The Hunger Games", "tick": 3},
+          {"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},
+          {"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3}
+
+
           ]
       },
     {
