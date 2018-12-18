@@ -51,9 +51,7 @@ public class APIService extends MicroService {
 
     @Override
     protected void initialize() {
-
         subscribeBroadcast(TickBroadcast.class, tickBroadcast -> {
-
             if (tickBroadcast.isFinalTick()) {
                 finishOperations();
                 return;
@@ -61,18 +59,14 @@ public class APIService extends MicroService {
             Queue<String> ordersForTick = tickToBookMap.get(tickBroadcast.getTick());
             if (ordersForTick != null) {
                 ConcurrentLinkedQueue<Future<OrderReceipt>> futures = new ConcurrentLinkedQueue<>();
-
                 //proccess all orders for this tick
                 while (!ordersForTick.isEmpty()) {
                     String bookName = ordersForTick.remove();
                     Future<OrderReceipt> fut = sendEvent(new BookOrderEvent(customer, bookName, tickBroadcast.getTick()));
-
                     //there is a registered SellingService
                     if (fut != null) {
                         futures.add(fut);
-
                     }
-
                 }
                 //get all future results.
                 while (!futures.isEmpty()) {
@@ -85,11 +79,8 @@ public class APIService extends MicroService {
                         }
                     } else
                         futures.offer(fut);
-
                 }
-
             }
-
         });
     }
 
