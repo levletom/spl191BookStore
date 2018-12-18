@@ -8,6 +8,9 @@ import com.google.gson.GsonBuilder;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Vector;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /** This is the Main class of the application. You should parse the input file,
@@ -32,8 +35,8 @@ public class BookStoreRunner {
         String json = args[0];
         customerHashMapFile= args[1];
         booksHashMapFile = args[2];
-        listOfOrderReceiptsFile = args[3];
         moneyRegisterFile = args[4];
+        listOfOrderReceiptsFile = args[3];
 
         try(Reader reader = new InputStreamReader(new FileInputStream(json))){
              g = gson.fromJson(reader,InputJsonReciver.class);
@@ -84,6 +87,9 @@ public class BookStoreRunner {
         Print(MoneyRegister.getInstance().getTotalEarnings() + "", dir + "Total");
     }
 
+    /**
+     * checks all initiated thread are in waiting state - meaning they finished registering and are now waithing for messages.
+     */
     private static void checkThreadsAreReady() {
         Queue<Thread> temp = new ConcurrentLinkedQueue<>();
         while(!allThreadsExeptTimer.isEmpty()){
@@ -96,10 +102,13 @@ public class BookStoreRunner {
         allThreadsExeptTimer = temp;
     }
 
+    /**
+     * prints all seralized objects
+     */
     private static void printAlObjects() {
         FileOutputStream fCustOut = null;
         try {
-            fCustOut = new FileOutputStream(customerHashMapFile);
+            fCustOut = new FileOutputStream(Paths.get(customerHashMapFile).toAbsolutePath().toString());
             ObjectOutputStream oos = new ObjectOutputStream(fCustOut);
             oos.writeObject(customerHashMap);
         } catch (FileNotFoundException e) {
@@ -107,11 +116,12 @@ public class BookStoreRunner {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         Inventory.getInstance().printInventoryToFile(booksHashMapFile);
         MoneyRegister.getInstance().printOrderReceipts(listOfOrderReceiptsFile);
         FileOutputStream fMoneyRegOut = null;
         try {
-            fMoneyRegOut = new FileOutputStream(moneyRegisterFile);
+            fMoneyRegOut = new FileOutputStream(Paths.get(moneyRegisterFile).toAbsolutePath().toString());
             ObjectOutputStream oos = new ObjectOutputStream(fMoneyRegOut);
             oos.writeObject(MoneyRegister.getInstance());
         } catch (FileNotFoundException e) {
@@ -121,6 +131,9 @@ public class BookStoreRunner {
         }
     }
 
+    /**
+     * makes all threads join.
+     */
     private static void joinAll() {
         try {
             timerThread.join();
