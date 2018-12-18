@@ -88,7 +88,6 @@ public class BasicTests {
 			testResults.append("####BASIC-TESTS-ERROR#####\nTotal Earnings by moneyreg is: ");
 			testResults.append(moneyRegister.getTotalEarnings());
 			testResults.append("\n But the amount bought by inventory is: " +totalEaringsByInventory);
-
 		}
 	}
 
@@ -116,7 +115,6 @@ public class BasicTests {
 
 				}
 			}
-
 		}
 	}
 

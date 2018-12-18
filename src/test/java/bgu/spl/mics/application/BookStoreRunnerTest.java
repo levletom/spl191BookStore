@@ -39,7 +39,7 @@ public class BookStoreRunnerTest {
 
     @Test
     public void main() throws IOException {
-        int testNum = 6;
+        int testNum = 9;
 
 
         String[] args = {"" + testNum + ".json", "customer" + testNum, "book" + testNum, "receipt" + testNum, "moneyReg" + testNum, "" + testNum};

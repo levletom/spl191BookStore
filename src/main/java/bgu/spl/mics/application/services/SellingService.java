@@ -45,14 +45,11 @@ public class SellingService extends MicroService{
 		Future<Integer> availableBookPrice = sendEvent(new CheckAvailabilityAndPriceEvent(bookOrderEvent.getBookName()));
 		if(availableBookPrice!=null){
 			Integer bookPrice = availableBookPrice.get();
-
 			if(bookPrice!=null&&bookPrice!=-1){
-
 				synchronized (bookOrderEvent.getCustomer()){
 					if(bookOrderEvent.getCustomer().getAvailableCreditAmount() >= bookPrice) {
 						Future<Boolean> beenTaken = sendEvent(new TakeBookEvent(bookOrderEvent.getBookName()));
 						if(beenTaken!=null && beenTaken.get()!=null && beenTaken.get()) {
-
 							OrderReceipt reciept = new OrderReceipt(0,
 									getName(),
 									bookOrderEvent.getCustomer().getId(),
@@ -61,36 +58,26 @@ public class SellingService extends MicroService{
 									currentTick,
 									bookOrderEvent.getOrderTick(),
 									processTick);
-
 							moneyRegister.file(reciept);
 							moneyRegister.chargeCreditCard(bookOrderEvent.getCustomer(), bookPrice);
-
-
 							sendEvent(new DeliveryEvent(bookOrderEvent.getBookName(), bookOrderEvent.getCustomer().getAddress(), bookOrderEvent.getCustomer().getDistance()));
 							complete(bookOrderEvent,reciept);
 						}
 						else{
-
 							complete(bookOrderEvent,null);
 						}
-
 					}
 					else
 					{
-
 						complete(bookOrderEvent,null);
 					}
-
 				}
 			}
 			else{
-
 				complete(bookOrderEvent,null);
 			}
-
 		}
 		else{
-
 			complete(bookOrderEvent,null);
         }
     }
