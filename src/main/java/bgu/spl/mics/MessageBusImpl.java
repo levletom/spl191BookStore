@@ -18,8 +18,6 @@ public class MessageBusImpl implements MessageBus {
     private ConcurrentHashMap<Event, Future> eventToItsReturnedFuture;
     private ConcurrentHashMap<MicroService, BlockingQueue<Class<? extends Event>>> microserviceToTypeOfEventItsRegisteredTo;
     private ConcurrentHashMap<MicroService, BlockingQueue<Class<? extends Broadcast>>> microserviceToTypeOfBroadcastItsRegisteredTo;
-    private Object lockForSubscribeEvent;
-    private Object lockForSubscribeBroadcast;
 
     private static MessageBusImpl instance = null;
 
@@ -31,13 +29,12 @@ public class MessageBusImpl implements MessageBus {
         eventToItsReturnedFuture = new ConcurrentHashMap<>();
         microserviceToTypeOfBroadcastItsRegisteredTo = new ConcurrentHashMap<>();
         microserviceToTypeOfEventItsRegisteredTo = new ConcurrentHashMap<>();
-        lockForSubscribeEvent = new Object();
-        lockForSubscribeBroadcast = new Object();
+
     }
 
     /**
      * Subscribes {@code m} to receive {@link Event}s of type {@code type}.
-     * locks if event was never subscribed to
+     *
      * <p>
      *
      * @param <T>  The type of the result expected by the completed event.
@@ -62,7 +59,7 @@ public class MessageBusImpl implements MessageBus {
 
     /**
      * Subscribes {@code m} to receive {@link Broadcast}s of type {@code type}
-     * locks if Brodcast was never subscribed to
+     *
      * <p>
      *
      * @param type The type to subscribe to.
@@ -85,14 +82,19 @@ public class MessageBusImpl implements MessageBus {
         }
     }
 
-    //tomer
 
-
+    /**
+     * completes the specified event with a result
+     * if the event was already completed - does nothing
+     * @param e      The completed event.
+     * @param result The resolved result of the completed event.
+     * @param <T>
+     */
     @Override
     public <T> void complete(Event<T> e, T result) {
         Future<T> fut = eventToItsReturnedFuture.get(e);
 
-        if (fut != null) {
+        if (fut != null&&!fut.isDone()) {
             fut.resolve(result);
         }
     }
@@ -120,8 +122,6 @@ public class MessageBusImpl implements MessageBus {
             }
         }
     }
-
-    //tomer
 
     /**
      * Adds the {@link Event} {@code e} to the message queue of one of the
@@ -156,7 +156,7 @@ public class MessageBusImpl implements MessageBus {
                 BlockingQueue<Message> specificServiceMessageLoopQueue = microServiceToBlockingQueue.get(serviceToHandleEvent);
 
                 if (specificServiceMessageLoopQueue != null) {
-                    //make sure queue doesnt get deleted from unregister
+                    //make sure queue doesnt get deleted from unregister - synched with unregister
                     synchronized (specificEventsRoundRobinQueue) {
                         if(microServiceToBlockingQueue.get(serviceToHandleEvent)!=null) {
                             Future<T> returnedFuture = new Future<>();
@@ -227,7 +227,7 @@ public class MessageBusImpl implements MessageBus {
                         eventTypeQueue.remove(m);
                 }
                 typeOfEventVec.clear();
-
+                //synched with sendEvent so event wont be sent to an unregistered service.
                 BlockingQueue<Message> thisMicroServiceQueue = microServiceToBlockingQueue.get(m);
                 synchronized (thisMicroServiceQueue) {
                     for (Message mes :
@@ -246,7 +246,7 @@ public class MessageBusImpl implements MessageBus {
         }
     }
 
-    //tomer
+
 
     /**
      * Using this method, a <b>registered</b> micro-service can take message
@@ -274,7 +274,6 @@ public class MessageBusImpl implements MessageBus {
         return returnedMessage;
     }
 
-    //amit
 
 
     public static MessageBusImpl getInstance() {

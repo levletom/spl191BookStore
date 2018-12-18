@@ -32,33 +32,33 @@ public class ResourceService extends MicroService{
 
 	@Override
 	protected void initialize() {
-		System.out.println( getName() + " started");
+
 		subscribeBroadcast(TickBroadcast.class, tickBroadcast -> {
-			System.out.println( getName() + " Recieved Tick: "+tickBroadcast.getTick());
+
 			this.lastTick = tickBroadcast.getTick();
 			if (tickBroadcast.isFinalTick()) {
 				finishOperations();
 			}
 		});
 		subscribeEvent(GetMeMyVehicleEvent.class,getMeMyVehicleEvent->{
-			System.out.println( getName() + " Recieved getMeMyVehicleEvent: "+" on tick "+lastTick);
+
 			Future<DeliveryVehicle> vehicleFuture = resourcesHolder.acquireVehicle();
 			if(vehicleFuture!=null) {
-				System.out.println( getName() + " Recieved Futre of vehicle "+" on tick "+lastTick);
+
 				returnedFutreVehicles.offer(vehicleFuture);
 				complete(getMeMyVehicleEvent,vehicleFuture);
 			}
 
 		});
 		subscribeEvent(ReleaseMyVehicleEvent.class, ReleaseMyVehicleEvent->{
-			System.out.println(getName() + " just recieved a ReleaseMyVehicleEvent and Currenttick is" + lastTick);
+
 			resourcesHolder.releaseVehicle(ReleaseMyVehicleEvent.getVehicle());
 			complete(ReleaseMyVehicleEvent,null);
 		});
 	}
 
 	private void finishOperations() {
-		System.out.println( getName() + "GraceFully Called Terminate");
+
 		for (Future<DeliveryVehicle> f :
 				returnedFutreVehicles) {
 			if(!f.isDone())

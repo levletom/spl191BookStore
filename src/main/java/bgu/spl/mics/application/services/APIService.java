@@ -7,6 +7,7 @@ import bgu.spl.mics.application.messages.Events.BookOrderEvent;
 import bgu.spl.mics.application.passiveObjects.Customer;
 import bgu.spl.mics.application.passiveObjects.Order;
 import bgu.spl.mics.application.passiveObjects.OrderReceipt;
+import com.sun.org.apache.xpath.internal.operations.Or;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -50,9 +51,7 @@ public class APIService extends MicroService {
 
     @Override
     protected void initialize() {
-        System.out.println("APIService " + getName() + " started");
         subscribeBroadcast(TickBroadcast.class, tickBroadcast -> {
-            System.out.println(getName() + " Recieved Tick: " + tickBroadcast.getTick());
             if (tickBroadcast.isFinalTick()) {
                 finishOperations();
                 return;
@@ -60,30 +59,28 @@ public class APIService extends MicroService {
             Queue<String> ordersForTick = tickToBookMap.get(tickBroadcast.getTick());
             if (ordersForTick != null) {
                 ConcurrentLinkedQueue<Future<OrderReceipt>> futures = new ConcurrentLinkedQueue<>();
-
                 //proccess all orders for this tick
                 while (!ordersForTick.isEmpty()) {
                     String bookName = ordersForTick.remove();
                     Future<OrderReceipt> fut = sendEvent(new BookOrderEvent(customer, bookName, tickBroadcast.getTick()));
-                    System.out.println(getName() + " sent Order for Book: " + bookName);
                     //there is a registered SellingService
                     if (fut != null) {
                         futures.add(fut);
-                        System.out.println(getName() + " got not null futre fororder of book : " + bookName);
                     }
                 }
-                for (Future<OrderReceipt> fut :
-                        futures) {
-                    OrderReceipt receipt = fut.get();
-                    //order completed
-                    if (receipt != null) {
-                        customer.addReceipt(receipt);
-                        System.out.println(getName() + " got and added to customer Receipt for book: " + receipt.getBookTitle());
-                    }
+                //get all future results.
+                while (!futures.isEmpty()) {
+                    Future<OrderReceipt> fut = futures.poll();
+                    if (fut.isDone()) {
+                        OrderReceipt receipt = fut.get();
+                        //order completed
+                        if (receipt != null) {
+                            customer.addReceipt(receipt);
+                        }
+                    } else
+                        futures.offer(fut);
                 }
-
             }
-
         });
     }
 
@@ -91,7 +88,7 @@ public class APIService extends MicroService {
      * finil operations
      */
     private void finishOperations() {
-        System.out.println(getName() + "GraceFully Called Terminate");
+
         terminate();
     }
 

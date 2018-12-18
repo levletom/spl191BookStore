@@ -42,10 +42,10 @@ public class BookInventoryInfo{
 	}
 
 	/**
-     * Retrieves the amount of books of this type in the inventory.
-     * <p>
-     * @return amount of available books.      
-     */
+	 * Retrieves the amount of books of this type in the inventory.
+	 * <p>
+	 * @return amount of available books.
+	 */
 	public int getAmountInInventory() {
 		return amount.get();
 	}

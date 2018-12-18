@@ -96,7 +96,7 @@ public class MoneyRegister implements Serializable {
 	 * //TODO DELETE THIS - FOR TEST ONLY
 	 * @return
 	 */
-	public List<OrderReceipt> getOrderReceipts() {
+	public List<OrderReceipt> getOrderReceiptsForTestsONLY() {
 		return listOfAllOrderReceipt;
 	}
 

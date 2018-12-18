@@ -1,0 +1,93 @@
+{
+  "initialInventory": [
+  {"bookTitle": "Harry Poter", "amount": 1000, "price": 10},
+  {"bookTitle": "The Hunger Games", "amount": 10, "price": 10}
+  ],
+  "initialResources":[
+   {"vehicles":[
+     {"license":123483, "speed": 2}
+
+
+     ]
+     }
+    ],
+  "services":{
+    "time": {
+      "speed": 1000,
+      "duration": 10
+    },
+    "selling": 1,
+    "inventoryService": 1,
+    "logistics": 1,
+    "resourcesService": 1,
+    "customers": [
+     {
+        "id": 123456789,
+        "name": "Bruria",
+        "address": "NewYork 123",
+        "distance":303,
+        "creditCard":{"number":67890,"amount":200 },
+        "orderSchedule": [
+            {"bookTitle": "Harry Poter", "tick": 3},
+            {"bookTitle": "The Hunger Games", "tick": 3},
+          {"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},
+          {"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3},{"bookTitle": "Harry Poter", "tick": 3},
+          {"bookTitle": "The Hunger Games", "tick": 3}
+
+
+          ]
+      },
+    {
+        "id": 234567891,
+        "name": "Shraga",
+        "address": "BeerSheva 3333",
+        "distance":102,
+         "creditCard":{"number":453536,"amount":220},
+    "orderSchedule": [
+        {"bookTitle": "The Hunger Games", "tick": 3}
+    ]
+    }
+  ]
+  }
+  
+  
+    
+}

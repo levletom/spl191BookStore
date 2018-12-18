@@ -32,27 +32,24 @@ public class SellingService extends MicroService{
 
 	@Override
 	protected void initialize() {
-		System.out.println( getName() + " started");
+
 		subscribeBroadcast(TickBroadcast.class , tickBroadCast ->{
-			System.out.println( getName() + " Recieved Tick: "+tickBroadCast.getTick());
+
 			currentTick = tickBroadCast.getTick();
 			if(tickBroadCast.isFinalTick())
 				finishOperation();
 			}
 		);
     subscribeEvent(BookOrderEvent.class,bookOrderEvent -> {
-    	int processTick = currentTick; System.out.println(this.getName() + "Recieved BookOrderEvent And Current tick is:" + currentTick);
-		Future<Integer> availableBookPrice = sendEvent(new CheckAvailabilityAndPriceEvent(bookOrderEvent.getBookName()));System.out.println(this.getName() + "sent CheckAvilabilityAndPriceEvent And Current tick is:" + currentTick);
-		if(availableBookPrice!=null){ System.out.println(this.getName() + "Recieved Future for CheckAvilabilityAndPriceEvent And its not null  And as well  Current tick is:" + currentTick);
+    	int processTick = currentTick;
+		Future<Integer> availableBookPrice = sendEvent(new CheckAvailabilityAndPriceEvent(bookOrderEvent.getBookName()));
+		if(availableBookPrice!=null){
 			Integer bookPrice = availableBookPrice.get();
-
 			if(bookPrice!=null&&bookPrice!=-1){
-				System.out.println(this.getName() + "there is an avilable book at the moment Current tick is:" + currentTick);
 				synchronized (bookOrderEvent.getCustomer()){
-					if(bookOrderEvent.getCustomer().getAvailableCreditAmount() >= bookPrice) {System.out.println(this.getName() + "Have enough Money to Buy A book And Current tick is:" + currentTick);
+					if(bookOrderEvent.getCustomer().getAvailableCreditAmount() >= bookPrice) {
 						Future<Boolean> beenTaken = sendEvent(new TakeBookEvent(bookOrderEvent.getBookName()));
 						if(beenTaken!=null && beenTaken.get()!=null && beenTaken.get()) {
-							System.out.println(this.getName() + "Has managed to take a book And Current tick is:" + currentTick);
 							OrderReceipt reciept = new OrderReceipt(0,
 									getName(),
 									bookOrderEvent.getCustomer().getId(),
@@ -61,34 +58,26 @@ public class SellingService extends MicroService{
 									currentTick,
 									bookOrderEvent.getOrderTick(),
 									processTick);
-
 							moneyRegister.file(reciept);
-							moneyRegister.chargeCreditCard(bookOrderEvent.getCustomer(), bookPrice);System.out.println(this.getName() + "Has issued a reciept and charged customer And Current tick is:" + currentTick);
-							sendEvent(new DeliveryEvent(bookOrderEvent.getBookName(), bookOrderEvent.getCustomer().getAddress(), bookOrderEvent.getCustomer().getDistance()));System.out.println(this.getName() + "sent a DeliveryEvent And Current tick is:" + currentTick);
-							complete(bookOrderEvent,reciept);System.out.println(this.getName() + "completed BookOrderEvent And Current tick is:" + currentTick);
+							moneyRegister.chargeCreditCard(bookOrderEvent.getCustomer(), bookPrice);
+							sendEvent(new DeliveryEvent(bookOrderEvent.getBookName(), bookOrderEvent.getCustomer().getAddress(), bookOrderEvent.getCustomer().getDistance()));
+							complete(bookOrderEvent,reciept);
 						}
 						else{
-							System.out.println(this.getName() + "book has been taken before we managed And Current tick is:" + currentTick);
 							complete(bookOrderEvent,null);
 						}
-
 					}
 					else
 					{
-						System.out.println(this.getName() + "we DONT Have enough Money to Buy A book And Current tick is:" + currentTick);
 						complete(bookOrderEvent,null);
 					}
-
 				}
 			}
 			else{
-				System.out.println(this.getName() + "there is NO avilable book at the moment Current tick is:" + currentTick);
 				complete(bookOrderEvent,null);
 			}
-
 		}
 		else{
-			System.out.println(this.getName() + "Recieved null instead of Future for CheckAvilabilityAndPriceEvent  Current tick is:" + currentTick);
 			complete(bookOrderEvent,null);
         }
     }
@@ -100,7 +89,7 @@ public class SellingService extends MicroService{
 	}
 
 	private void finishOperation() {
-		System.out.println(this.getName()+"terminated At " + this.currentTick);
+
 		terminate();
 	}
 
