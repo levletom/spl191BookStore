@@ -3,7 +3,6 @@ package bgu.spl.mics.application;
 import bgu.spl.mics.application.passiveObjects.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.junit.After;
 import org.junit.Test;
 
 import java.io.*;
@@ -12,9 +11,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.junit.Assert.*;
-
-public class BookStoreRunnerTest {
+public class BookStoreRunnerTestTomer {
 
     private static HashMap<Integer, Customer> customers;
     private static HashMap<String, Integer> inventory;
@@ -39,7 +36,7 @@ public class BookStoreRunnerTest {
 
     @Test
     public void main() throws IOException {
-        int testNum = 9;
+        int testNum = 12;
 
 
         String[] args = {"" + testNum + ".json", "customer" + testNum, "book" + testNum, "receipt" + testNum, "moneyReg" + testNum, "" + testNum};
@@ -57,7 +54,7 @@ public class BookStoreRunnerTest {
         }
         BookStoreRunner.main(args);
         ExtractProgramOutput(args);
-        BasicTests basicTests = new BasicTests(customers, inventory, receipts, moneyRegister, g);
+        BasicTestsTomer basicTests = new BasicTestsTomer(customers, inventory, receipts, moneyRegister, g);
         testResults = basicTests.runTests().toString();
         outputTestResults(testResults);
         tearDown();

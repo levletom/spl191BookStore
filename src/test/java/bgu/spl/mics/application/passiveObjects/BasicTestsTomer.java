@@ -9,7 +9,7 @@ import bgu.spl.mics.application.passiveObjects.Customer;
 import bgu.spl.mics.application.passiveObjects.MoneyRegister;
 import bgu.spl.mics.application.passiveObjects.OrderReceipt;
 
-public class BasicTests {
+public class BasicTestsTomer {
 
     private HashMap<Integer,Customer> customers;
     private HashMap<String,Integer> inventory;
@@ -20,7 +20,7 @@ public class BasicTests {
     private StringBuilder testResults;
 
     
-	public BasicTests(HashMap<Integer, Customer> customers, HashMap<String, Integer> inventory, List<OrderReceipt> receipts, MoneyRegister moneyRegister,InputJsonReciver input) {
+	public BasicTestsTomer(HashMap<Integer, Customer> customers, HashMap<String, Integer> inventory, List<OrderReceipt> receipts, MoneyRegister moneyRegister, InputJsonReciver input) {
 		this.customers = customers;
 		this.inventory = inventory;
 		this.receipts = receipts;
