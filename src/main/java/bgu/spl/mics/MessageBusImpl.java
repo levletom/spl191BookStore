@@ -39,7 +39,7 @@ public class MessageBusImpl implements MessageBus {
 
     /**
      * Subscribes {@code m} to receive {@link Event}s of type {@code type}.
-     * locks if event was never subscribed to
+     * locks if event type was never subscribed to, on the type of the event.
      * <p>
      *
      * @param <T>  The type of the result expected by the completed event.
@@ -66,7 +66,7 @@ public class MessageBusImpl implements MessageBus {
 
     /**
      * Subscribes {@code m} to receive {@link Broadcast}s of type {@code type}
-     * locks if Brodcast was never subscribed to
+     * locks if Brodcast was never subscribed to, on the type of the broadcast
      * <p>
      *
      * @param type The type to subscribe to.
@@ -91,9 +91,14 @@ public class MessageBusImpl implements MessageBus {
         }
     }
 
-    //tomer
 
-
+    /**
+     * completes the specified event with a result
+     * if the event was already completed - does nothing
+     * @param e      The completed event.
+     * @param result The resolved result of the completed event.
+     * @param <T>
+     */
     @Override
     public <T> void complete(Event<T> e, T result) {
         Future<T> fut = eventToItsReturnedFuture.get(e);
@@ -126,8 +131,6 @@ public class MessageBusImpl implements MessageBus {
             }
         }
     }
-
-    //tomer
 
     /**
      * Adds the {@link Event} {@code e} to the message queue of one of the

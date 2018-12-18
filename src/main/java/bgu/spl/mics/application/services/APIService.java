@@ -87,17 +87,6 @@ public class APIService extends MicroService {
                         futures.offer(fut);
 
                 }
-                /*for (Future<OrderReceipt> fut :
-                        futures) {
-                    OrderReceipt receipt = fut.get();
-                    //order completed
-                    if (receipt != null) {
-                        customer.addReceipt(receipt);
-
-                    }
-                }
-                */
-
 
             }
 
